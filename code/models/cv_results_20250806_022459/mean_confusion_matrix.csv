@@ -1,8 +1,0 @@
-,CTI,DFIR::incidents,DFIR::phishing,OFFSEC::CVD,OFFSEC::Pentesting,SMS,Trash
-CTI,45.0,0.4,0.0,0.2,0.0,0.0,0.0
-DFIR::incidents,0.8,32.8,0.6,0.0,0.0,0.0,0.0
-DFIR::phishing,0.0,0.2,32.6,0.0,0.0,0.0,0.0
-OFFSEC::CVD,0.0,0.0,0.0,21.6,0.0,0.0,0.0
-OFFSEC::Pentesting,0.0,0.0,0.2,0.0,13.2,0.2,0.0
-SMS,0.0,0.0,0.0,0.0,0.0,24.8,0.0
-Trash,0.0,0.0,0.0,0.0,0.0,0.0,14.2

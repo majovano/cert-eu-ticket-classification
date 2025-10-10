@@ -1,7 +1,0 @@
-CTI
-DFIR::incidents
-DFIR::phishing
-OFFSEC::CVD
-OFFSEC::Pentesting
-SMS
-Trash
