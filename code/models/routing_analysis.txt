@@ -1,0 +1,14 @@
+CERT-EU Confidence-Based Routing Analysis
+==================================================
+
+Thresholds: High=0.9, Low=0.6
+Total validation samples: 187
+
+Auto-route: 98.4%
+Human verify: 1.1%
+Manual triage: 0.5%
+
+This suggests that:
+- 98.4% of tickets can be automatically routed
+- 1.1% need human verification
+- 0.5% require full manual analysis

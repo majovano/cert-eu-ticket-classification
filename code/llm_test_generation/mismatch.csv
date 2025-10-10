@@ -1,0 +1,757 @@
+ticket_id,title,content,created_date,email_address,llm_queue,ground_truth_llm,prediction_assigned,mismatch,assigned_title,assigned_content,assigned_created_date,assigned_email_address,assigned_assigned_queue
+TKT-BCD0AD8C,Performance Issues with Phishing Awareness Training Portal – Impact on HR Onboarding Compliance,"Dear CERT-EU Administrative & HR Team,
+
+I am writing to bring to your attention a recurring issue affecting the performance of our internal phishing awareness training portal. Several colleagues from the Human Resources department have reported that the portal is experiencing significant delays when loading training modules and assessment pages. This slowdown has been particularly noticeable during peak hours and is impacting our ability to onboard new staff in accordance with the updated NIS2 compliance schedule.
+
+We have already consulted with our local IT support, who confirmed that the underlying server resources are operating within normal parameters. However, they suggested that the recent upload of new multilingual training content and simulated phishing scenarios may have contributed to the increased load.
+
+Could you please review the portal’s current configuration and advise if there are any recommended adjustments to improve responsiveness? If necessary, we can provide access logs or a summary of affected user sessions (please advise on secure transfer method). Timely resolution is important, as delays are affecting both training completion rates and compliance reporting for our HR processes.
+
+Thank you for your assistance. Please let me know if further details are required or if a meeting should be scheduled to discuss this matter.
+
+Best regards,
+
+Marta Kowalska
+HR Training Coordinator
+Directorate-General for Human Resources
+European Commission",2024-07-08,marta.kowalska@ec.europa.eu,Trash,Trash,SMS,True,Performance Issues with Phishing Awareness Training Portal – Impact on HR Onboarding Compliance,"Dear CERT-EU Administrative & HR Team,
+
+I am writing to bring to your attention a recurring issue affecting the performance of our internal phishing awareness training portal. Several colleagues from the Human Resources department have reported that the portal is experiencing significant delays when loading training modules and assessment pages. This slowdown has been particularly noticeable during peak hours and is impacting our ability to onboard new staff in accordance with the updated NIS2 compliance schedule.
+
+We have already consulted with our local IT support, who confirmed that the underlying server resources are operating within normal parameters. However, they suggested that the recent upload of new multilingual training content and simulated phishing scenarios may have contributed to the increased load.
+
+Could you please review the portal’s current configuration and advise if there are any recommended adjustments to improve responsiveness? If necessary, we can provide access logs or a summary of affected user sessions (please advise on secure transfer method). Timely resolution is important, as delays are affecting both training completion rates and compliance reporting for our HR processes.
+
+Thank you for your assistance. Please let me know if further details are required or if a meeting should be scheduled to discuss this matter.
+
+Best regards,
+
+Marta Kowalska
+HR Training Coordinator
+Directorate-General for Human Resources
+European Commission",2024-07-08,marta.kowalska@ec.europa.eu,SMS
+TKT-8A126F52,Purchase Order Status Request: PO-34721-LUX for Encrypted USB Drives & Office Equipment,"Dear CERT-EU Procurement Team,
+
+I hope this finds you well. I’m reaching out regarding the recent hardware requisition for our Luxembourg office—specifically, the request for five encrypted USB drives and two ergonomic chairs for the Incident Response section. The order was submitted via the EULogistics portal on 19 June, but we haven’t received an order confirmation or estimated delivery date yet. Our team is preparing for a surge in new joiners next month, so timely receipt is important for onboarding.
+
+Could you please check if the purchase order (ref: PO-34721-LUX) has been processed? If there are any outstanding documents or approvals needed from our side, let me know and I’ll coordinate with our local admin. Also, kindly advise if the vendor requires updated delivery instructions due to recent access restrictions at the Jean Monnet building.
+
+Thanks in advance for your help!
+
+Best regards,
+
+Anita Kovács
+Administrative Officer, CERT-EU Luxembourg
+anita.kovacs@cert.europa.eu",2024-12-29T00:00:00,anita.kovacs@cert.europa.eu,Trash,Trash,SMS,True,Purchase Order Status Request: PO-34721-LUX for Encrypted USB Drives & Office Equipment,"Dear CERT-EU Procurement Team,
+
+I hope this finds you well. I’m reaching out regarding the recent hardware requisition for our Luxembourg office—specifically, the request for five encrypted USB drives and two ergonomic chairs for the Incident Response section. The order was submitted via the EULogistics portal on 19 June, but we haven’t received an order confirmation or estimated delivery date yet. Our team is preparing for a surge in new joiners next month, so timely receipt is important for onboarding.
+
+Could you please check if the purchase order (ref: PO-34721-LUX) has been processed? If there are any outstanding documents or approvals needed from our side, let me know and I’ll coordinate with our local admin. Also, kindly advise if the vendor requires updated delivery instructions due to recent access restrictions at the Jean Monnet building.
+
+Thanks in advance for your help!
+
+Best regards,
+
+Anita Kovács
+Administrative Officer, CERT-EU Luxembourg
+anita.kovacs@cert.europa.eu",2024-12-29T00:00:00,anita.kovacs@cert.europa.eu,SMS
+TKT-1FA19C3F,,"{Real-time IP Blocklist} {DKIM Hard Fail} Document Shared for Review and Signing
+----
+To protect your privacy, remote resources are blocked. This File contains
+confidential financial data and payment references. Please confirm you are
+authorized to view this confidential attachment. View Archive You have received a document to review and sign. REVIEW DOCUMENT DocuSign Administrator
+File Name: Invoıce Request - Purchase Please complete and sign this document.
+Recieved by: Thank You. Do Not Share This Email
+This email contains a secure link to Docusign. Please do not share this email,
+link, or access code with others.",,markus.schneider@cyberpolizei.de,DFIR::phishing,DFIR::phishing,Trash,True,,"{Real-time IP Blocklist} {DKIM Hard Fail} Document Shared for Review and Signing
+----
+To protect your privacy, remote resources are blocked. This File contains
+confidential financial data and payment references. Please confirm you are
+authorized to view this confidential attachment. View Archive You have received a document to review and sign. REVIEW DOCUMENT DocuSign Administrator
+File Name: Invoıce Request - Purchase Please complete and sign this document.
+Recieved by: Thank You. Do Not Share This Email
+This email contains a secure link to Docusign. Please do not share this email,
+link, or access code with others.",,markus.schneider@cyberpolizei.de,Trash
+TKT-C2C04D22,,"{Real-time IP Blocklist} {DKIM Hard Fail} Payment Details Enclosed – Awaiting Your Acknowledgment
+----
+To protect your privacy, remote resources have been blocked. This PDF
+attachment contains sensitive financial data and payment reference details.
+Please confirm that you are the authorized recipient and are authorized to
+review this confidential attachment. View Archive Dear Sir/Ma""m, ; I hope this message finds you well. Following our conversation last week, we would like to formally inform you
+that the Telegraphic Transfer (TT) payment is being processed today as
+scheduled. To ensure accuracy and alignment with your records, please find the attached
+document containing the complete payment details for your review. We kindly
+ask you to go through the information and confirm receipt of the payment
+instructions at your earliest convenience. Your prompt confirmation will allow us to proceed with the next steps without
+delay and ensure a smooth and timely completion of the transaction. Should you require any additional information or clarification, please feel
+free to reach out directly. Thank you for your attention, and we look forward to your timely
+confirmation. (89 KB)
+Best Regards, Barry Self Premium Auditor p: f: a: 320 Cumberland Street, Lebanon PA, 17042 Confidentiality Notice: The contents of this email including attachments are
+intended solely for the addressee(s) and may contain confidential and/or
+privileged information and may be legally protected from disclosure. If you
+are not the intended recipient of this message or their agent, or if this
+message has been addressed to you in error, please immediately alert the
+sender by reply email and delete this message and any attachments. If you're
+not the intended recipient, you are hereby notified that any use,
+dissemination, copying, or storage of this message or its attachments is
+strictly prohibited. /",,barry.self@cyberfinance-audit.co.uk,DFIR::phishing,DFIR::phishing,SMS,True,,"{Real-time IP Blocklist} {DKIM Hard Fail} Payment Details Enclosed – Awaiting Your Acknowledgment
+----
+To protect your privacy, remote resources have been blocked. This PDF
+attachment contains sensitive financial data and payment reference details.
+Please confirm that you are the authorized recipient and are authorized to
+review this confidential attachment. View Archive Dear Sir/Ma""m, ; I hope this message finds you well. Following our conversation last week, we would like to formally inform you
+that the Telegraphic Transfer (TT) payment is being processed today as
+scheduled. To ensure accuracy and alignment with your records, please find the attached
+document containing the complete payment details for your review. We kindly
+ask you to go through the information and confirm receipt of the payment
+instructions at your earliest convenience. Your prompt confirmation will allow us to proceed with the next steps without
+delay and ensure a smooth and timely completion of the transaction. Should you require any additional information or clarification, please feel
+free to reach out directly. Thank you for your attention, and we look forward to your timely
+confirmation. (89 KB)
+Best Regards, Barry Self Premium Auditor p: f: a: 320 Cumberland Street, Lebanon PA, 17042 Confidentiality Notice: The contents of this email including attachments are
+intended solely for the addressee(s) and may contain confidential and/or
+privileged information and may be legally protected from disclosure. If you
+are not the intended recipient of this message or their agent, or if this
+message has been addressed to you in error, please immediately alert the
+sender by reply email and delete this message and any attachments. If you're
+not the intended recipient, you are hereby notified that any use,
+dissemination, copying, or storage of this message or its attachments is
+strictly prohibited. /",,barry.self@cyberfinance-audit.co.uk,SMS
+TKT-C90C2BD2,Themed Phishing Targeting EFSA – Are Similar IOCs Observed in Other EU Agencies?,"Hi CERT-EU CTI Team,
+
+I wanted to flag something odd we've been seeing at the European Food Safety Authority (EFSA) over the past week. Sorry if this is a bit rambling—I'm not a security specialist, but our IT support suggested I forward this to you for further analysis.
+
+We’ve noticed a handful of staff receiving phishing emails that look eerily similar to EFSA’s SharePoint notifications, but with minor differences in sender addresses and slightly off branding. A few colleagues almost clicked—luckily, our anti-phishing training has been paying off, so most reported the messages instead.
+
+I pasted a few of the suspicious sender addresses and subject lines below. These emails all included links leading to hxxps://efsa-docs-storage[.]com/signin (definitely not our real SharePoint). Some also requested urgent action to “review confidential documents.” I checked with IT and they confirmed this isn’t a legitimate EFSA system.
+
+Sample subjects:
+- “Important: New SharePoint document shared with you”
+- “Confidential policy update – review by 12 July”
+
+Our IT folks said the domain was registered only last month and the links seem to redirect through some tracking service in the Czech Republic (tracking-js[.]cz). They also mentioned seeing some odd sign-in attempts in our Azure AD logs around the same time (no confirmed compromise so far).
+
+Is this something you’re tracking more broadly across EU agencies? Happy to send full headers or logs if needed—just let me know what info would help.
+
+Thanks and sorry if this isn’t the right way to report it!
+
+Best regards,
+
+Alessandra Romano
+Programme Assistant, EFSA
+alessandra.romano@efsa.europa.eu",2025-06-24T00:00:00,alessandra.romano@efsa.europa.eu,DFIR::phishing,DFIR::phishing,CTI,True,Themed Phishing Targeting EFSA – Are Similar IOCs Observed in Other EU Agencies?,"Hi CERT-EU CTI Team,
+
+I wanted to flag something odd we've been seeing at the European Food Safety Authority (EFSA) over the past week. Sorry if this is a bit rambling—I'm not a security specialist, but our IT support suggested I forward this to you for further analysis.
+
+We’ve noticed a handful of staff receiving phishing emails that look eerily similar to EFSA’s SharePoint notifications, but with minor differences in sender addresses and slightly off branding. A few colleagues almost clicked—luckily, our anti-phishing training has been paying off, so most reported the messages instead.
+
+I pasted a few of the suspicious sender addresses and subject lines below. These emails all included links leading to hxxps://efsa-docs-storage[.]com/signin (definitely not our real SharePoint). Some also requested urgent action to “review confidential documents.” I checked with IT and they confirmed this isn’t a legitimate EFSA system.
+
+Sample subjects:
+- “Important: New SharePoint document shared with you”
+- “Confidential policy update – review by 12 July”
+
+Our IT folks said the domain was registered only last month and the links seem to redirect through some tracking service in the Czech Republic (tracking-js[.]cz). They also mentioned seeing some odd sign-in attempts in our Azure AD logs around the same time (no confirmed compromise so far).
+
+Is this something you’re tracking more broadly across EU agencies? Happy to send full headers or logs if needed—just let me know what info would help.
+
+Thanks and sorry if this isn’t the right way to report it!
+
+Best regards,
+
+Alessandra Romano
+Programme Assistant, EFSA
+alessandra.romano@efsa.europa.eu",2025-06-24T00:00:00,alessandra.romano@efsa.europa.eu,CTI
+TKT-27B2ED7B,Request for Guidance: Secure Integration of Cybersecurity Vetting Platform with HR Recruitment System,"Dear CERT-EU Administrative & HR Services,
+
+I am writing to request clarification regarding the integration of the EU’s central HR applicant tracking system (ATS) with the recently procured cybersecurity candidate vetting platform, SentinelScreen. As part of our ongoing recruitment drive for the Digital Security Operations Unit, we are aiming to streamline the background check process for shortlisted applicants while ensuring full compliance with GDPR and NIS2 data handling standards.
+
+Specifically, our HR team would like to understand how SentinelScreen’s automated threat intelligence checks and digital footprint analysis can be securely incorporated into our current ATS workflow. We are particularly interested in the following points:
+
+1. What are the recommended steps for integrating SentinelScreen’s API with our ATS to enable secure, automated data transfers of candidate information for vetting purposes? 
+2. Are there specific technical safeguards or encryption protocols we must enable to ensure that no sensitive applicant data is exposed during the transfer or analysis phases? 
+3. Could you provide an overview of the audit trail and logging capabilities available for HR compliance monitoring within SentinelScreen, especially in the context of EU institutional recruitment?
+4. Are there any known interoperability issues with the current ATS version (v4.7.2) or best practices to avoid duplicate records or data integrity concerns?
+
+For your reference, I have attached the latest process flow diagram (in PDF) outlining our proposed integration steps, as well as a sample anonymised data export (CSV format) from the ATS. Please let us know if additional documentation is required.
+
+We are aiming to finalise the integration before the next candidate selection round (mid-June), so a timely response would be greatly appreciated. If a short coordination call would be helpful, I am available on Thursday or Friday morning this week.
+
+Thank you for your support in ensuring a secure, efficient, and compliant recruitment process for our cybersecurity teams.
+
+Best regards,
+
+Elena Marini
+HR Officer – Digital Security Recruitment
+Directorate-General for Informatics
+European Commission",2025-05-03,elena.marini@ec.europa.eu,OFFSEC::CVD,OFFSEC::CVD,SMS,True,Request for Guidance: Secure Integration of Cybersecurity Vetting Platform with HR Recruitment System,"Dear CERT-EU Administrative & HR Services,
+
+I am writing to request clarification regarding the integration of the EU’s central HR applicant tracking system (ATS) with the recently procured cybersecurity candidate vetting platform, SentinelScreen. As part of our ongoing recruitment drive for the Digital Security Operations Unit, we are aiming to streamline the background check process for shortlisted applicants while ensuring full compliance with GDPR and NIS2 data handling standards.
+
+Specifically, our HR team would like to understand how SentinelScreen’s automated threat intelligence checks and digital footprint analysis can be securely incorporated into our current ATS workflow. We are particularly interested in the following points:
+
+1. What are the recommended steps for integrating SentinelScreen’s API with our ATS to enable secure, automated data transfers of candidate information for vetting purposes? 
+2. Are there specific technical safeguards or encryption protocols we must enable to ensure that no sensitive applicant data is exposed during the transfer or analysis phases? 
+3. Could you provide an overview of the audit trail and logging capabilities available for HR compliance monitoring within SentinelScreen, especially in the context of EU institutional recruitment?
+4. Are there any known interoperability issues with the current ATS version (v4.7.2) or best practices to avoid duplicate records or data integrity concerns?
+
+For your reference, I have attached the latest process flow diagram (in PDF) outlining our proposed integration steps, as well as a sample anonymised data export (CSV format) from the ATS. Please let us know if additional documentation is required.
+
+We are aiming to finalise the integration before the next candidate selection round (mid-June), so a timely response would be greatly appreciated. If a short coordination call would be helpful, I am available on Thursday or Friday morning this week.
+
+Thank you for your support in ensuring a secure, efficient, and compliant recruitment process for our cybersecurity teams.
+
+Best regards,
+
+Elena Marini
+HR Officer – Digital Security Recruitment
+Directorate-General for Informatics
+European Commission",2025-05-03,elena.marini@ec.europa.eu,SMS
+TKT-BD27361D,Usability Enhancements Requested for Secure Onboarding Portal (Cybersecurity Recruitment – Administrative Process,"Dear CERT-EU HR & Administrative Team,
+
+I am writing to suggest a review and potential enhancement of the candidate onboarding portal used for cybersecurity recruitment and internal mobility processes. Several new joiners and external applicants have provided feedback that the current interface, especially for submitting mandatory compliance documentation (e.g., GDPR and NIS2 declarations, background check forms), is not as intuitive as it could be.
+
+Specifically, users have reported difficulties with uploading sensitive documents securely from mobile devices and tablets, as well as confusion navigating the digital consent forms for data processing. Improving the usability of the portal—such as implementing a clearer step-by-step dashboard, drag-and-drop file submission, and real-time support chat—could significantly improve both compliance rates and user satisfaction.
+
+Given the sensitive nature of the information processed (including CVs, security clearance certificates, and personal identification), ensuring robust but user-friendly secure document handling is critical. If possible, I recommend scheduling a brief meeting with the HR digital services team to discuss these suggestions and review any planned updates to the onboarding platform. Please let me know if additional user feedback or documentation is required from my side to support this proposal.
+
+Thank you for your attention to this matter.
+
+Best regards,
+
+Annalisa Greco
+HR Assistant
+DG DIGIT
+European Commission",2024-08-12,annalisa.greco@ec.europa.eu,Trash,Trash,SMS,True,Usability Enhancements Requested for Secure Onboarding Portal (Cybersecurity Recruitment – Administrative Process,"Dear CERT-EU HR & Administrative Team,
+
+I am writing to suggest a review and potential enhancement of the candidate onboarding portal used for cybersecurity recruitment and internal mobility processes. Several new joiners and external applicants have provided feedback that the current interface, especially for submitting mandatory compliance documentation (e.g., GDPR and NIS2 declarations, background check forms), is not as intuitive as it could be.
+
+Specifically, users have reported difficulties with uploading sensitive documents securely from mobile devices and tablets, as well as confusion navigating the digital consent forms for data processing. Improving the usability of the portal—such as implementing a clearer step-by-step dashboard, drag-and-drop file submission, and real-time support chat—could significantly improve both compliance rates and user satisfaction.
+
+Given the sensitive nature of the information processed (including CVs, security clearance certificates, and personal identification), ensuring robust but user-friendly secure document handling is critical. If possible, I recommend scheduling a brief meeting with the HR digital services team to discuss these suggestions and review any planned updates to the onboarding platform. Please let me know if additional user feedback or documentation is required from my side to support this proposal.
+
+Thank you for your attention to this matter.
+
+Best regards,
+
+Annalisa Greco
+HR Assistant
+DG DIGIT
+European Commission",2024-08-12,annalisa.greco@ec.europa.eu,SMS
+TKT-7FF307E0,Clarification Needed on Onboarding Procedures for External Secondees – Danish NCSC Integration (Administrative Coordination,"Dear CERT-EU HR Administration,
+
+I am writing to request clarification and support regarding the updated onboarding process for external secondees, specifically in relation to recent changes in the submission of security clearance documentation and contractual paperwork. We have two new colleagues from the Danish National Cyber Security Centre scheduled to begin their secondment at CERT-EU on 8 July, and we are encountering some confusion regarding the necessary administrative steps to finalise their onboarding.
+
+Previously, our team submitted scanned copies of national security vetting certificates directly via the SecureDocs platform. However, the most recent communication from your office (dated 3 June) indicated a shift to using the eSignEU system for all sensitive document transfers and contract signatures. Unfortunately, our external partners are reporting persistent access issues when attempting to authenticate on eSignEU using their national eID cards (NemID), resulting in failed logins and incomplete uploads. We have attached screenshots of the error messages (defanged as per guidelines) and can provide further technical details if required.
+
+Additionally, we are unclear about the deadlines for submitting the original hardcopy contracts and whether remote onboarding is permissible for the initial orientation week. Given the cross-border nature of this arrangement and ongoing travel restrictions, it would be helpful to have written confirmation of acceptable procedures for remote induction and any required forms (e.g., badge pre-registration, IT access request, GDPR training acknowledgment). Our Danish colleagues are eager to ensure full compliance with both CERT-EU and Commission standards, but we are keen to avoid administrative delays that could affect their planned start date.
+
+Could you kindly advise on the following points:
+- Is it possible to process security vetting documents via SecureDocs until eSignEU access is resolved?
+- What is the current policy regarding remote onboarding for external secondees, and are there any specific forms or checklists to complete?
+- Are digital signatures on contracts considered legally binding for secondments from non-EU national agencies?
+
+If a coordination call would help clarify the process, we are available later this week. Please let us know if there are updated guidelines or templates we should share with our partners. Thank you in advance for your assistance and patience with these cross-border arrangements.
+
+Best regards,
+
+Malene Sørensen
+Liaison Officer, Danish National Cyber Security Centre
+
+Attachments: eSignEU_Login_Error[.]png, Vetting_Process_Guide.pdf",2024-10-03T00:00:00,malene.sorensen@nscsc.dk,Trash,Trash,SMS,True,Clarification Needed on Onboarding Procedures for External Secondees – Danish NCSC Integration (Administrative Coordination,"Dear CERT-EU HR Administration,
+
+I am writing to request clarification and support regarding the updated onboarding process for external secondees, specifically in relation to recent changes in the submission of security clearance documentation and contractual paperwork. We have two new colleagues from the Danish National Cyber Security Centre scheduled to begin their secondment at CERT-EU on 8 July, and we are encountering some confusion regarding the necessary administrative steps to finalise their onboarding.
+
+Previously, our team submitted scanned copies of national security vetting certificates directly via the SecureDocs platform. However, the most recent communication from your office (dated 3 June) indicated a shift to using the eSignEU system for all sensitive document transfers and contract signatures. Unfortunately, our external partners are reporting persistent access issues when attempting to authenticate on eSignEU using their national eID cards (NemID), resulting in failed logins and incomplete uploads. We have attached screenshots of the error messages (defanged as per guidelines) and can provide further technical details if required.
+
+Additionally, we are unclear about the deadlines for submitting the original hardcopy contracts and whether remote onboarding is permissible for the initial orientation week. Given the cross-border nature of this arrangement and ongoing travel restrictions, it would be helpful to have written confirmation of acceptable procedures for remote induction and any required forms (e.g., badge pre-registration, IT access request, GDPR training acknowledgment). Our Danish colleagues are eager to ensure full compliance with both CERT-EU and Commission standards, but we are keen to avoid administrative delays that could affect their planned start date.
+
+Could you kindly advise on the following points:
+- Is it possible to process security vetting documents via SecureDocs until eSignEU access is resolved?
+- What is the current policy regarding remote onboarding for external secondees, and are there any specific forms or checklists to complete?
+- Are digital signatures on contracts considered legally binding for secondments from non-EU national agencies?
+
+If a coordination call would help clarify the process, we are available later this week. Please let us know if there are updated guidelines or templates we should share with our partners. Thank you in advance for your assistance and patience with these cross-border arrangements.
+
+Best regards,
+
+Malene Sørensen
+Liaison Officer, Danish National Cyber Security Centre
+
+Attachments: eSignEU_Login_Error[.]png, Vetting_Process_Guide.pdf",2024-10-03T00:00:00,malene.sorensen@nscsc.dk,SMS
+TKT-347C3167,Induced Outage: Fake EU Security Update Disrupts Analytics Platform,"Dear CERT-EU DFIR Team,
+
+We are experiencing a critical incident that appears to be linked to a targeted phishing campaign against our investment analytics operations. This morning, shortly after a routine login to our analytics dashboard, several team members (including myself) received an email purporting to be from the 'EU Digital Security Service' with the subject: ""Immediate Action Required: Security Update for Analytics Platform"". The sender address was 'security-alerts@eu-digital-portal[.]eu', which superficially resembles an official domain but does not match any known internal contacts.
+
+The message claims that urgent security updates are required due to 'recent NIS2 compliance changes' and instructs recipients to download a 'critical patch' via a provided link (defanged here: hxxps://eu-analytics-security[.]com/update). The email threatens restricted access to investment optimization tools if the action is not taken within the next 2 hours. Unfortunately, one colleague reports clicking the link and attempting to run the downloaded file, after which our analytics system experienced an abrupt outage. All attempts to restart or revert the system have failed, and we suspect malware may have been deployed.
+
+We have isolated the affected workstation and preserved logs from the analytics platform and email gateway (can provide upon request). The original phishing email and the suspicious attachment have been saved as .eml and .zip files for analysis. At present, no external data exfiltration has been confirmed, but we are urgently seeking your guidance on next steps, including malware containment and wider user notification. We are mindful of our obligations under GDPR and NIS2 and want to ensure appropriate incident handling.
+
+Please advise on immediate containment and forensic procedures. We appreciate any guidance you can provide as soon as possible, as this outage is severely impacting our operational capacity.
+
+Thank you for your prompt attention.
+
+Best regards,
+
+Sofia Martens
+IT Systems Coordinator
+Directorate-General for Economic and Financial Affairs",2024-05-23,sofia.martens@ec.europa.eu,DFIR::incidents,DFIR::incidents,DFIR::phishing,True,Induced Outage: Fake EU Security Update Disrupts Analytics Platform,"Dear CERT-EU DFIR Team,
+
+We are experiencing a critical incident that appears to be linked to a targeted phishing campaign against our investment analytics operations. This morning, shortly after a routine login to our analytics dashboard, several team members (including myself) received an email purporting to be from the 'EU Digital Security Service' with the subject: ""Immediate Action Required: Security Update for Analytics Platform"". The sender address was 'security-alerts@eu-digital-portal[.]eu', which superficially resembles an official domain but does not match any known internal contacts.
+
+The message claims that urgent security updates are required due to 'recent NIS2 compliance changes' and instructs recipients to download a 'critical patch' via a provided link (defanged here: hxxps://eu-analytics-security[.]com/update). The email threatens restricted access to investment optimization tools if the action is not taken within the next 2 hours. Unfortunately, one colleague reports clicking the link and attempting to run the downloaded file, after which our analytics system experienced an abrupt outage. All attempts to restart or revert the system have failed, and we suspect malware may have been deployed.
+
+We have isolated the affected workstation and preserved logs from the analytics platform and email gateway (can provide upon request). The original phishing email and the suspicious attachment have been saved as .eml and .zip files for analysis. At present, no external data exfiltration has been confirmed, but we are urgently seeking your guidance on next steps, including malware containment and wider user notification. We are mindful of our obligations under GDPR and NIS2 and want to ensure appropriate incident handling.
+
+Please advise on immediate containment and forensic procedures. We appreciate any guidance you can provide as soon as possible, as this outage is severely impacting our operational capacity.
+
+Thank you for your prompt attention.
+
+Best regards,
+
+Sofia Martens
+IT Systems Coordinator
+Directorate-General for Economic and Financial Affairs",2024-05-23,sofia.martens@ec.europa.eu,DFIR::phishing
+TKT-F4FDF947,Employment Certificate Request for Swedish Visa – Time-Sensitive HR Processing Needed,"Subject: Re: Request for Employment Certificate – Visa Application Process (see attached form)
+
+Dear CERT-EU HR Team,
+
+I hope you’re well. I’m writing to request an official certificate of employment for my ongoing visa application with the Swedish Migration Agency. They’ve asked for confirmation of my current position, employment duration, and contract type (I’m a fixed-term IT Security Assistant, started 1 March 2023). 
+
+I’ve attached the standard request form provided by the embassy (please see Employment_Certificate_Request_SWE.pdf) and included a draft letter based on their template in case it helps speed things up. If you need any additional information (contract copy, recent payslips, etc.), just let me know and I’ll forward them ASAP.
+
+I understand the HR office is quite busy this month with the new recruitment round, but my appointment at the embassy is already scheduled for next Thursday, so I’d really appreciate it if you could process this request as soon as possible. If there’s a self-service portal or a way for me to download a basic certificate directly, please advise—I couldn’t find one in the intranet but maybe I missed it. 
+
+Also, could you confirm if the certificate needs to be stamped or signed by a specific official? The embassy mentioned that digital signatures are fine as long as they’re issued by a recognized EU institution.
+
+Thanks a lot for your help!
+
+Best regards,
+
+Martina Rosi
+IT Security Assistant
+CERT-EU
+
+Attachment: Employment_Certificate_Request_SWE.pdf",2025-02-18T00:00:00,martina.rosi@cert.europa.eu,Trash,Trash,SMS,True,Employment Certificate Request for Swedish Visa – Time-Sensitive HR Processing Needed,"Subject: Re: Request for Employment Certificate – Visa Application Process (see attached form)
+
+Dear CERT-EU HR Team,
+
+I hope you’re well. I’m writing to request an official certificate of employment for my ongoing visa application with the Swedish Migration Agency. They’ve asked for confirmation of my current position, employment duration, and contract type (I’m a fixed-term IT Security Assistant, started 1 March 2023). 
+
+I’ve attached the standard request form provided by the embassy (please see Employment_Certificate_Request_SWE.pdf) and included a draft letter based on their template in case it helps speed things up. If you need any additional information (contract copy, recent payslips, etc.), just let me know and I’ll forward them ASAP.
+
+I understand the HR office is quite busy this month with the new recruitment round, but my appointment at the embassy is already scheduled for next Thursday, so I’d really appreciate it if you could process this request as soon as possible. If there’s a self-service portal or a way for me to download a basic certificate directly, please advise—I couldn’t find one in the intranet but maybe I missed it. 
+
+Also, could you confirm if the certificate needs to be stamped or signed by a specific official? The embassy mentioned that digital signatures are fine as long as they’re issued by a recognized EU institution.
+
+Thanks a lot for your help!
+
+Best regards,
+
+Martina Rosi
+IT Security Assistant
+CERT-EU
+
+Attachment: Employment_Certificate_Request_SWE.pdf",2025-02-18T00:00:00,martina.rosi@cert.europa.eu,SMS
+TKT-7081713F,Procurement Discrepancies Detected in Cybersecurity Software Orders – Administrative Review Requested,"Dear CERT-EU Administrative & HR Team,
+
+I am reaching out regarding an ongoing issue identified in our recent cybersecurity procurement process for the annual renewal of endpoint protection licences across multiple DGs. Following the latest system update to our procurement management platform, we have noticed discrepancies in the automatically generated purchase orders for several cybersecurity software vendors. Specifically, there appear to be duplicate entries and misallocated budget lines associated with recent orders for anti-malware and EDR solutions, which could potentially lead to unauthorised overcommitments of funds.
+
+Our internal audit, conducted in accordance with EU financial regulations and cybersecurity procurement best practices, confirmed that the invoice recalculations and payment configurations within the platform are still not aligning with our actual contract terms or the approved vendor lists. We have cross-checked the affected records against the original signed contracts and the framework agreements, but the inconsistencies persist.
+
+Given the sensitivity of these cybersecurity assets and the importance of maintaining both financial and compliance integrity, we would appreciate your guidance on the following points:
+- Recommended administrative steps for flagging and correcting such procurement anomalies in the context of cybersecurity-related purchases
+- Any standard procedures for reporting and investigating potential platform misconfigurations, especially if there is a risk of unauthorised procurement or compliance breach (noting NIS2 and GDPR obligations)
+- Advice on secure sharing of supporting documentation (we have prepared a redacted procurement anomaly report and defanged screenshots, available upon request)
+
+While there is no immediate evidence of malicious activity, we are treating this as a routine report with a view to preventing future administrative or security issues. If a meeting is required to discuss remediation or coordination with the IT procurement team, please let us know your availability.
+
+Thank you for your assistance, and please advise if you require further details or specific documentation to progress this matter.
+
+Kind regards,
+
+Isabelle Fournier
+Procurement Administration Officer
+Directorate-General for Informatics (DIGIT)
+European Commission",2024-01-07,isabelle.fournier@ec.europa.eu,Trash,Trash,SMS,True,Procurement Discrepancies Detected in Cybersecurity Software Orders – Administrative Review Requested,"Dear CERT-EU Administrative & HR Team,
+
+I am reaching out regarding an ongoing issue identified in our recent cybersecurity procurement process for the annual renewal of endpoint protection licences across multiple DGs. Following the latest system update to our procurement management platform, we have noticed discrepancies in the automatically generated purchase orders for several cybersecurity software vendors. Specifically, there appear to be duplicate entries and misallocated budget lines associated with recent orders for anti-malware and EDR solutions, which could potentially lead to unauthorised overcommitments of funds.
+
+Our internal audit, conducted in accordance with EU financial regulations and cybersecurity procurement best practices, confirmed that the invoice recalculations and payment configurations within the platform are still not aligning with our actual contract terms or the approved vendor lists. We have cross-checked the affected records against the original signed contracts and the framework agreements, but the inconsistencies persist.
+
+Given the sensitivity of these cybersecurity assets and the importance of maintaining both financial and compliance integrity, we would appreciate your guidance on the following points:
+- Recommended administrative steps for flagging and correcting such procurement anomalies in the context of cybersecurity-related purchases
+- Any standard procedures for reporting and investigating potential platform misconfigurations, especially if there is a risk of unauthorised procurement or compliance breach (noting NIS2 and GDPR obligations)
+- Advice on secure sharing of supporting documentation (we have prepared a redacted procurement anomaly report and defanged screenshots, available upon request)
+
+While there is no immediate evidence of malicious activity, we are treating this as a routine report with a view to preventing future administrative or security issues. If a meeting is required to discuss remediation or coordination with the IT procurement team, please let us know your availability.
+
+Thank you for your assistance, and please advise if you require further details or specific documentation to progress this matter.
+
+Kind regards,
+
+Isabelle Fournier
+Procurement Administration Officer
+Directorate-General for Informatics (DIGIT)
+European Commission",2024-01-07,isabelle.fournier@ec.europa.eu,SMS
+TKT-9CD697EA,Clarification Needed: Badge Issuance & Reimbursement Procedures for Ljubljana Workshop Delegation,"Dear CERT-EU HR & Training Coordination Team,
+
+I hope this message finds you well. I am writing from the University of Ljubljana’s Information Security Research Group regarding the upcoming joint cybersecurity awareness workshop scheduled for 18–19 July at the Berlaymont building. As discussed during our last coordination call, our team is responsible for delivering the session on “Emerging Threats in Social Engineering” on the second day.
+
+We have a few administrative questions and requests to ensure smooth logistics for our academic delegation:
+
+1. Could you please confirm the process for issuing temporary visitor badges for our three presenters (Dr. Marko Zupan, Ms. Tanja Kosec, and myself)? We have completed the online registration form via the EC events portal, but the confirmation email mentioned an additional ‘on-site verification’ step. Is there a specific desk or contact person we should approach upon arrival?
+
+2. Regarding the reimbursement of travel expenses, our finance office requires a formal invitation letter and a signed attendance certificate for each participant. Would it be possible to receive these documents in advance, or should we collect them at the venue?
+
+3. We intend to bring some printed workshop materials and small branded USB drives for attendees. Are there any restrictions or customs forms we should be aware of when bringing such items into the Commission premises?
+
+Apologies for the multiple questions—just want to make sure we’re aligned on all the practicalities. If there’s a checklist or info pack for external partners, could you please forward it to us? I’ve attached our team’s travel itinerary and ID scans as requested in the previous email.
+
+Thank you very much for your support and guidance. Looking forward to a successful event!
+
+Best regards,
+
+Petra Novak
+Project Coordinator, Information Security Research Group
+University of Ljubljana
+petra.novak@uni-lj.si",2024-09-11T00:00:00,petra.novak@uni-lj.si,Trash,Trash,SMS,True,Clarification Needed: Badge Issuance & Reimbursement Procedures for Ljubljana Workshop Delegation,"Dear CERT-EU HR & Training Coordination Team,
+
+I hope this message finds you well. I am writing from the University of Ljubljana’s Information Security Research Group regarding the upcoming joint cybersecurity awareness workshop scheduled for 18–19 July at the Berlaymont building. As discussed during our last coordination call, our team is responsible for delivering the session on “Emerging Threats in Social Engineering” on the second day.
+
+We have a few administrative questions and requests to ensure smooth logistics for our academic delegation:
+
+1. Could you please confirm the process for issuing temporary visitor badges for our three presenters (Dr. Marko Zupan, Ms. Tanja Kosec, and myself)? We have completed the online registration form via the EC events portal, but the confirmation email mentioned an additional ‘on-site verification’ step. Is there a specific desk or contact person we should approach upon arrival?
+
+2. Regarding the reimbursement of travel expenses, our finance office requires a formal invitation letter and a signed attendance certificate for each participant. Would it be possible to receive these documents in advance, or should we collect them at the venue?
+
+3. We intend to bring some printed workshop materials and small branded USB drives for attendees. Are there any restrictions or customs forms we should be aware of when bringing such items into the Commission premises?
+
+Apologies for the multiple questions—just want to make sure we’re aligned on all the practicalities. If there’s a checklist or info pack for external partners, could you please forward it to us? I’ve attached our team’s travel itinerary and ID scans as requested in the previous email.
+
+Thank you very much for your support and guidance. Looking forward to a successful event!
+
+Best regards,
+
+Petra Novak
+Project Coordinator, Information Security Research Group
+University of Ljubljana
+petra.novak@uni-lj.si",2024-09-11T00:00:00,petra.novak@uni-lj.si,SMS
+TKT-94D2529A,Clarification Needed: Administrative Procedures for ENISA–CERT-EU Joint Training Event Participation,"Dear CERT-EU HR Team,
+
+I hope this message finds you well. My name is Maria Papadopoulos, and I am writing from the Administrative Office at the European Union Agency for Cybersecurity (ENISA) in Athens. I am reaching out regarding the coordination of an upcoming cybersecurity awareness training session, which we are co-hosting with CERT-EU as part of the inter-agency collaboration initiative.
+
+We have tentatively scheduled the event for Thursday, 23 May, and expect participation from both ENISA and CERT-EU staff, as well as several external stakeholders from DG HOME and the European Parliament IT Security Office. Our aim is to ensure a smooth registration process, proper documentation of attendance, and compliance with the latest EU training record-keeping requirements. 
+
+As we finalise the agenda, I would like to clarify a few administrative points to avoid last-minute confusion:
+
+1. Could you please confirm the preferred process for submitting the list of CERT-EU attendees? In the past, we have used the HR-Events shared mailbox, but I am not sure if there have been any updates to this protocol since last year’s sessions.
+
+2. Are there any new requirements for collecting consent forms or privacy acknowledgements from participants, particularly given the recent changes to the data protection guidelines under Regulation (EU) 2018/1725? If so, would you be able to provide the updated template or a link to the relevant intranet page?
+
+3. For external visitors, is there a specific badge request form we should use, or can we continue with the standard Visitor Access Request (VAR) procedure? We had a few issues last autumn with delayed badge processing for non-EU nationals, so any advice to streamline this would be much appreciated.
+
+4. Lastly, is it possible to request a certificate of participation for attendees, as several of our colleagues require official documentation for their annual performance reviews? If this is handled through your HRIS, kindly let me know the steps for submitting requests.
+
+I have attached the preliminary agenda (Draft_Agenda_ENISA-CERT-EU_Training.pdf) for your review, as well as a draft registration list. Please let me know if you need any additional information or if there is a preferred contact person on your side for further coordination. We are aiming to finalise logistics by next Friday, so a response at your earliest convenience would be very helpful.
+
+Thank you very much for your cooperation and support. Looking forward to your guidance and to another successful joint event.
+
+Best regards,
+
+Maria Papadopoulos
+Administrative Officer
+ENISA – European Union Agency for Cybersecurity
+
+Attachments: Draft_Agenda_ENISA-CERT-EU_Training.pdf, Registration_List.xlsx",2025-02-18T00:00:00,maria.papadopoulos@enisa.europa.eu,Trash,Trash,SMS,True,Clarification Needed: Administrative Procedures for ENISA–CERT-EU Joint Training Event Participation,"Dear CERT-EU HR Team,
+
+I hope this message finds you well. My name is Maria Papadopoulos, and I am writing from the Administrative Office at the European Union Agency for Cybersecurity (ENISA) in Athens. I am reaching out regarding the coordination of an upcoming cybersecurity awareness training session, which we are co-hosting with CERT-EU as part of the inter-agency collaboration initiative.
+
+We have tentatively scheduled the event for Thursday, 23 May, and expect participation from both ENISA and CERT-EU staff, as well as several external stakeholders from DG HOME and the European Parliament IT Security Office. Our aim is to ensure a smooth registration process, proper documentation of attendance, and compliance with the latest EU training record-keeping requirements. 
+
+As we finalise the agenda, I would like to clarify a few administrative points to avoid last-minute confusion:
+
+1. Could you please confirm the preferred process for submitting the list of CERT-EU attendees? In the past, we have used the HR-Events shared mailbox, but I am not sure if there have been any updates to this protocol since last year’s sessions.
+
+2. Are there any new requirements for collecting consent forms or privacy acknowledgements from participants, particularly given the recent changes to the data protection guidelines under Regulation (EU) 2018/1725? If so, would you be able to provide the updated template or a link to the relevant intranet page?
+
+3. For external visitors, is there a specific badge request form we should use, or can we continue with the standard Visitor Access Request (VAR) procedure? We had a few issues last autumn with delayed badge processing for non-EU nationals, so any advice to streamline this would be much appreciated.
+
+4. Lastly, is it possible to request a certificate of participation for attendees, as several of our colleagues require official documentation for their annual performance reviews? If this is handled through your HRIS, kindly let me know the steps for submitting requests.
+
+I have attached the preliminary agenda (Draft_Agenda_ENISA-CERT-EU_Training.pdf) for your review, as well as a draft registration list. Please let me know if you need any additional information or if there is a preferred contact person on your side for further coordination. We are aiming to finalise logistics by next Friday, so a response at your earliest convenience would be very helpful.
+
+Thank you very much for your cooperation and support. Looking forward to your guidance and to another successful joint event.
+
+Best regards,
+
+Maria Papadopoulos
+Administrative Officer
+ENISA – European Union Agency for Cybersecurity
+
+Attachments: Draft_Agenda_ENISA-CERT-EU_Training.pdf, Registration_List.xlsx",2025-02-18T00:00:00,maria.papadopoulos@enisa.europa.eu,SMS
+TKT-6A737CE2,Application Status Inquiry: HR Assistant Role (Ref: HR-2024-27) – EURES Submission Follow-Up,"Hello CERT-EU Admin Team,
+
+Hope you’re all well. I’m writing to check on the current status of my application for the HR Assistant position (Ref: HR-2024-27) with CERT-EU, which I submitted about three weeks ago via the EURES portal. I included my CV, cover letter, and the requested proof of language proficiency (C1 French). 
+
+Since then, I haven’t received any confirmation email or update regarding the next steps, and I’m concerned my application may not have been received correctly or is possibly stuck in the system. I did check my spam folder, but nothing so far. If it helps, my EURES application ID is 1834092. 
+
+Could you please confirm whether my documents were received and advise if there are any additional steps required on my end? I am also available for a phone interview at short notice, should that be required. If there’s an issue with the language certificate (it’s from Alliance Française, scanned as PDF), please let me know and I can resend or provide a notarised version.
+
+Sorry if this is not the right mailbox, but I couldn’t find a direct contact for HR recruitment follow-up. Thank you for your help and understanding—just want to make sure I don’t miss any deadlines or required actions!
+
+Looking forward to your reply.
+
+Kind regards,
+
+Julien Lefèvre
+julien.lefevre@email.fr
+Lyon, France",2024-11-27T00:00:00,julien.lefevre@email.fr,Trash,Trash,SMS,True,Application Status Inquiry: HR Assistant Role (Ref: HR-2024-27) – EURES Submission Follow-Up,"Hello CERT-EU Admin Team,
+
+Hope you’re all well. I’m writing to check on the current status of my application for the HR Assistant position (Ref: HR-2024-27) with CERT-EU, which I submitted about three weeks ago via the EURES portal. I included my CV, cover letter, and the requested proof of language proficiency (C1 French). 
+
+Since then, I haven’t received any confirmation email or update regarding the next steps, and I’m concerned my application may not have been received correctly or is possibly stuck in the system. I did check my spam folder, but nothing so far. If it helps, my EURES application ID is 1834092. 
+
+Could you please confirm whether my documents were received and advise if there are any additional steps required on my end? I am also available for a phone interview at short notice, should that be required. If there’s an issue with the language certificate (it’s from Alliance Française, scanned as PDF), please let me know and I can resend or provide a notarised version.
+
+Sorry if this is not the right mailbox, but I couldn’t find a direct contact for HR recruitment follow-up. Thank you for your help and understanding—just want to make sure I don’t miss any deadlines or required actions!
+
+Looking forward to your reply.
+
+Kind regards,
+
+Julien Lefèvre
+julien.lefevre@email.fr
+Lyon, France",2024-11-27T00:00:00,julien.lefevre@email.fr,SMS
+TKT-17B8AB16,Unexpected Security Training License Charges – Procurement & Compliance Clarification Needed (NIS2,"Dear CERT-EU Administrative & HR Support,
+
+I am contacting you regarding a recurring issue with invoicing for our managed security awareness training subscription (contract ref: CYB-TRN-23-041). Despite having previously updated our billing contact and procurement details in your vendor portal last quarter, we have again received unanticipated charges this month for user licenses that were not part of our original agreement. 
+
+We have double-checked our administrative settings and user allocation reports, and it appears the platform may be automatically provisioning additional seats due to integration with our EU SSO (Single Sign-On) system. This was not foreseen in our internal procurement process, and our budget team has flagged it as a compliance concern with NIS2 cost-tracking requirements. 
+
+Could you please clarify:
+- Whether recent platform changes could affect license assignment and result in unexpected fees?
+- The steps to formally dispute or adjust these charges, ideally with supporting documentation for our internal audit (we can share redacted cost reports if needed)?
+- If there is a designated contact for ongoing vendor management related to security training services?
+
+We would appreciate a prompt response as we are closing the monthly financial cycle soon. If necessary, I am available for a call this week to discuss details or provide additional evidence (e.g., screenshot attachments).
+
+Thank you for your assistance.
+
+Best regards,
+
+Anna Richter
+Procurement & HR Administration
+Directorate-General for Informatics
+European Commission",2024-10-25,anna.richter@ec.europa.eu,Trash,Trash,SMS,True,Unexpected Security Training License Charges – Procurement & Compliance Clarification Needed (NIS2,"Dear CERT-EU Administrative & HR Support,
+
+I am contacting you regarding a recurring issue with invoicing for our managed security awareness training subscription (contract ref: CYB-TRN-23-041). Despite having previously updated our billing contact and procurement details in your vendor portal last quarter, we have again received unanticipated charges this month for user licenses that were not part of our original agreement. 
+
+We have double-checked our administrative settings and user allocation reports, and it appears the platform may be automatically provisioning additional seats due to integration with our EU SSO (Single Sign-On) system. This was not foreseen in our internal procurement process, and our budget team has flagged it as a compliance concern with NIS2 cost-tracking requirements. 
+
+Could you please clarify:
+- Whether recent platform changes could affect license assignment and result in unexpected fees?
+- The steps to formally dispute or adjust these charges, ideally with supporting documentation for our internal audit (we can share redacted cost reports if needed)?
+- If there is a designated contact for ongoing vendor management related to security training services?
+
+We would appreciate a prompt response as we are closing the monthly financial cycle soon. If necessary, I am available for a call this week to discuss details or provide additional evidence (e.g., screenshot attachments).
+
+Thank you for your assistance.
+
+Best regards,
+
+Anna Richter
+Procurement & HR Administration
+Directorate-General for Informatics
+European Commission",2024-10-25,anna.richter@ec.europa.eu,SMS
+TKT-C5E2AC8E,Employment Confirmation Letter Request for ENISA-CERT-EU Secondee: Guidance Needed on Procedure,"Hi CERT-EU HR Team,
+
+Hope this message finds you well. I’m reaching out regarding the process for requesting an employment confirmation letter for a former staff member who worked with us on the ENISA-CERT-EU joint project last year. We’ve received a formal request from the Belgian Ministry of Interior, who require official confirmation of Ms. Marieke Janssen’s employment period and role at CERT-EU for their security clearance renewal procedure. 
+
+I’ve checked the internal HR portal and couldn’t locate a template or clear instructions for external reference letters, especially for secondees who were part of cross-institutional projects. The Ministry’s letter (attached as PDF) specifies that the confirmation should include start/end dates, project assignment, and a brief outline of duties. They’ve also asked for the document to be signed and stamped by an authorised HR representative.
+
+Could you please advise on the following:
+- Is there a standard procedure or form for this type of request, or should we draft the letter manually?
+- Who should be listed as the signatory (Head of HR, or the project lead)?
+- Do you require any additional documentation from our side (e.g., Ms. Janssen’s contract, project assignment letter)?
+
+The Ministry has requested the letter by next Friday, so I’d appreciate your guidance on how to proceed to avoid any delays. If it’s easier, I’m happy to jump on a quick Teams call to clarify the details. 
+
+Let me know if you need the original request forwarded or any other info from our archives. Thanks a lot for your help – this isn’t a super frequent request on our end, so apologies if I’ve missed any obvious steps!
+
+Best regards,
+
+Tomasz Nowak
+Administrative Officer
+ENISA Liaison Unit
+European Union Agency for Cybersecurity
+
+—
+Attachment: Letter_Request_BelgianMinistry[.]pdf",2025-04-02T00:00:00,tomasz.nowak@enisa.europa.eu,Trash,Trash,SMS,True,Employment Confirmation Letter Request for ENISA-CERT-EU Secondee: Guidance Needed on Procedure,"Hi CERT-EU HR Team,
+
+Hope this message finds you well. I’m reaching out regarding the process for requesting an employment confirmation letter for a former staff member who worked with us on the ENISA-CERT-EU joint project last year. We’ve received a formal request from the Belgian Ministry of Interior, who require official confirmation of Ms. Marieke Janssen’s employment period and role at CERT-EU for their security clearance renewal procedure. 
+
+I’ve checked the internal HR portal and couldn’t locate a template or clear instructions for external reference letters, especially for secondees who were part of cross-institutional projects. The Ministry’s letter (attached as PDF) specifies that the confirmation should include start/end dates, project assignment, and a brief outline of duties. They’ve also asked for the document to be signed and stamped by an authorised HR representative.
+
+Could you please advise on the following:
+- Is there a standard procedure or form for this type of request, or should we draft the letter manually?
+- Who should be listed as the signatory (Head of HR, or the project lead)?
+- Do you require any additional documentation from our side (e.g., Ms. Janssen’s contract, project assignment letter)?
+
+The Ministry has requested the letter by next Friday, so I’d appreciate your guidance on how to proceed to avoid any delays. If it’s easier, I’m happy to jump on a quick Teams call to clarify the details. 
+
+Let me know if you need the original request forwarded or any other info from our archives. Thanks a lot for your help – this isn’t a super frequent request on our end, so apologies if I’ve missed any obvious steps!
+
+Best regards,
+
+Tomasz Nowak
+Administrative Officer
+ENISA Liaison Unit
+European Union Agency for Cybersecurity
+
+—
+Attachment: Letter_Request_BelgianMinistry[.]pdf",2025-04-02T00:00:00,tomasz.nowak@enisa.europa.eu,SMS
+TKT-CF1B9ECA,Procurement Portal: Unintended Access to Supplier Documents by Modifying URLs,"Hi CERT-EU Team,
+
+I’m writing to flag a security issue I came across while using the internal procurement portal (https://procure.europarl.europa.eu) for routine supplier onboarding. I’m not a technical person, but I noticed something odd: when I tried to access a previous supplier’s contract upload, I was able to view not just their documents, but also files from other unrelated suppliers by simply tweaking the numbers in the URL (e.g., changing /documents/2489 to /documents/2490, /2491, etc.).
+
+I don’t know if this is supposed to happen, but it seems like anyone logged in could see confidential files from other vendors. I haven’t tried downloading anything except my own, but the preview loads for all of them. This looks like a data privacy issue, and I’m worried about the implications for both the Parliament and the suppliers.
+
+I haven’t shared this with anyone else yet. Not sure if I should contact IT directly or if this is the right place, but I wanted to make sure it gets to the right people. If you need more info, I can try to explain what I did step by step, but I’m not familiar with technical terms or security stuff. I’ve attached a few screenshots showing what I saw (I blurred out sensitive info).
+
+Please let me know if I should stop using the portal for now or if there’s anything else I should do. Sorry if this isn’t the right way to report it, but I thought it was important.
+
+Best regards,
+
+Clara Dubois
+Procurement Assistant
+European Parliament
+clara.dubois@europarl.europa.eu",2025-05-03T00:00:00,clara.dubois@europarl.europa.eu,OFFSEC::Pentesting,OFFSEC::Pentesting,OFFSEC::CVD,True,Procurement Portal: Unintended Access to Supplier Documents by Modifying URLs,"Hi CERT-EU Team,
+
+I’m writing to flag a security issue I came across while using the internal procurement portal (https://procure.europarl.europa.eu) for routine supplier onboarding. I’m not a technical person, but I noticed something odd: when I tried to access a previous supplier’s contract upload, I was able to view not just their documents, but also files from other unrelated suppliers by simply tweaking the numbers in the URL (e.g., changing /documents/2489 to /documents/2490, /2491, etc.).
+
+I don’t know if this is supposed to happen, but it seems like anyone logged in could see confidential files from other vendors. I haven’t tried downloading anything except my own, but the preview loads for all of them. This looks like a data privacy issue, and I’m worried about the implications for both the Parliament and the suppliers.
+
+I haven’t shared this with anyone else yet. Not sure if I should contact IT directly or if this is the right place, but I wanted to make sure it gets to the right people. If you need more info, I can try to explain what I did step by step, but I’m not familiar with technical terms or security stuff. I’ve attached a few screenshots showing what I saw (I blurred out sensitive info).
+
+Please let me know if I should stop using the portal for now or if there’s anything else I should do. Sorry if this isn’t the right way to report it, but I thought it was important.
+
+Best regards,
+
+Clara Dubois
+Procurement Assistant
+European Parliament
+clara.dubois@europarl.europa.eu",2025-05-03T00:00:00,clara.dubois@europarl.europa.eu,OFFSEC::CVD
+TKT-47FE7324,Clarification Request: ESET Endpoint Protection Renewal Purchase Order Discrepancies,"Subject: Purchase Order Clarification Needed – Endpoint Protection Renewal
+
+Dear CERT-EU Administrative Team,
+
+I hope this message finds you well. I am reaching out from the IT Procurement Office at the Council of the European Union regarding the renewal process for the ESET Endpoint Protection licenses currently deployed across our shared cybersecurity workstations. We recently received the pro forma invoice (ref: ESET2024-PO-CEU-19) from your vendor relations desk, and before proceeding with the final approval, I would like to clarify a few administrative details to ensure compliance with both internal and inter-institutional procurement guidelines.
+
+Firstly, could you confirm whether the total number of endpoints (listed as 320 in the attached quote) reflects the most up-to-date inventory post the recent hardware refresh in April? Our records indicate a slight discrepancy, as we decommissioned 12 legacy devices during the last quarter. If there is a reconciliation report available, it would be helpful to cross-check figures before we validate the PO.
+
+Secondly, the invoice specifies a three-year term, whereas our initial request was for a two-year renewal to align with our budget planning cycle. Please advise if the vendor is flexible on this point or if a contract amendment is required. If so, could you provide the standard template for amendment requests or direct me to the relevant SharePoint location? 
+
+Lastly, we noticed that the invoice includes a line item for ""advanced threat analytics module"" which, to our knowledge, was not part of the original RFP. Kindly confirm whether this was bundled at no extra cost, or if there will be an additional administrative step to approve this module separately.
+
+For your reference, I have attached the scanned PO draft and the vendor’s quote (both in PDF). If there are any missing documents or forms you need from our side to expedite the approval, please let me know. Our finance controller is keen to finalize this before the end of the fiscal quarter to avoid any service gaps in endpoint protection coverage.
+
+Thank you in advance for your assistance. Please feel free to call my direct line if you need further clarification, or if a quick Teams meeting would be more efficient.
+
+Best regards,
+
+Rémi Dufour
+IT Procurement Specialist
+Council of the European Union
+remi.dufour@consilium.europa.eu",2024-09-27T00:00:00,remi.dufour@consilium.europa.eu,Trash,Trash,SMS,True,Clarification Request: ESET Endpoint Protection Renewal Purchase Order Discrepancies,"Subject: Purchase Order Clarification Needed – Endpoint Protection Renewal
+
+Dear CERT-EU Administrative Team,
+
+I hope this message finds you well. I am reaching out from the IT Procurement Office at the Council of the European Union regarding the renewal process for the ESET Endpoint Protection licenses currently deployed across our shared cybersecurity workstations. We recently received the pro forma invoice (ref: ESET2024-PO-CEU-19) from your vendor relations desk, and before proceeding with the final approval, I would like to clarify a few administrative details to ensure compliance with both internal and inter-institutional procurement guidelines.
+
+Firstly, could you confirm whether the total number of endpoints (listed as 320 in the attached quote) reflects the most up-to-date inventory post the recent hardware refresh in April? Our records indicate a slight discrepancy, as we decommissioned 12 legacy devices during the last quarter. If there is a reconciliation report available, it would be helpful to cross-check figures before we validate the PO.
+
+Secondly, the invoice specifies a three-year term, whereas our initial request was for a two-year renewal to align with our budget planning cycle. Please advise if the vendor is flexible on this point or if a contract amendment is required. If so, could you provide the standard template for amendment requests or direct me to the relevant SharePoint location? 
+
+Lastly, we noticed that the invoice includes a line item for ""advanced threat analytics module"" which, to our knowledge, was not part of the original RFP. Kindly confirm whether this was bundled at no extra cost, or if there will be an additional administrative step to approve this module separately.
+
+For your reference, I have attached the scanned PO draft and the vendor’s quote (both in PDF). If there are any missing documents or forms you need from our side to expedite the approval, please let me know. Our finance controller is keen to finalize this before the end of the fiscal quarter to avoid any service gaps in endpoint protection coverage.
+
+Thank you in advance for your assistance. Please feel free to call my direct line if you need further clarification, or if a quick Teams meeting would be more efficient.
+
+Best regards,
+
+Rémi Dufour
+IT Procurement Specialist
+Council of the European Union
+remi.dufour@consilium.europa.eu",2024-09-27T00:00:00,remi.dufour@consilium.europa.eu,SMS
+TKT-2BF65A68,Request for Procurement and Billing Details: Threat Intelligence Sharing Platform (GDPR/NIS2 Compliance,"Dear CERT-EU Administrative & Procurement Team,
+
+I am writing to request detailed information regarding the procurement and billing procedures for the new threat intelligence sharing platform, which is under consideration for deployment across our department. As part of our budget planning for Q3, it is important for us to understand the full cost structure, including any recurring licensing fees, support agreements, and compliance-related charges (particularly those associated with GDPR and NIS2 alignment).
+
+Could you please clarify the standard administrative process for onboarding this type of cybersecurity SaaS solution? Specifically, I would appreciate guidance on:
+- Required documentation for initiating the purchase order (e.g., Data Processing Agreement, vendor security certifications)
+- Billing cycle options and invoicing timelines for EU institutions
+- Points of contact for technical vs. administrative queries
+- Any recent policy updates affecting procurement of cloud-based cybersecurity services
+
+If there are sample templates (such as the standard EU-compliant vendor assessment form or a checklist for third-party risk evaluation), kindly attach or indicate where these can be accessed securely. We are aiming to finalise our internal approval by the end of the month, so a prompt response would be greatly appreciated.
+
+Thank you for your support. Please let me know if a short call is needed to discuss specifics, or if you require additional details from our side.
+
+Best regards,
+
+Marta Kowalska
+Procurement Officer
+Directorate-General for Budget
+European Commission",2025-04-28,marta.kowalska@ec.europa.eu,Trash,Trash,SMS,True,Request for Procurement and Billing Details: Threat Intelligence Sharing Platform (GDPR/NIS2 Compliance,"Dear CERT-EU Administrative & Procurement Team,
+
+I am writing to request detailed information regarding the procurement and billing procedures for the new threat intelligence sharing platform, which is under consideration for deployment across our department. As part of our budget planning for Q3, it is important for us to understand the full cost structure, including any recurring licensing fees, support agreements, and compliance-related charges (particularly those associated with GDPR and NIS2 alignment).
+
+Could you please clarify the standard administrative process for onboarding this type of cybersecurity SaaS solution? Specifically, I would appreciate guidance on:
+- Required documentation for initiating the purchase order (e.g., Data Processing Agreement, vendor security certifications)
+- Billing cycle options and invoicing timelines for EU institutions
+- Points of contact for technical vs. administrative queries
+- Any recent policy updates affecting procurement of cloud-based cybersecurity services
+
+If there are sample templates (such as the standard EU-compliant vendor assessment form or a checklist for third-party risk evaluation), kindly attach or indicate where these can be accessed securely. We are aiming to finalise our internal approval by the end of the month, so a prompt response would be greatly appreciated.
+
+Thank you for your support. Please let me know if a short call is needed to discuss specifics, or if you require additional details from our side.
+
+Best regards,
+
+Marta Kowalska
+Procurement Officer
+Directorate-General for Budget
+European Commission",2025-04-28,marta.kowalska@ec.europa.eu,SMS
+TKT-47381B9A,SignumPro Suite Licence Renewal: Purchase Order Submission and DPA Clarification Required,"Dear CERT-EU Administrative Team,
+
+I hope this message finds you well. I am writing to request your assistance with the purchase order process for the upcoming renewal of our digital signature software licences (SignumPro Suite). Our department relies on this tool for processing internal HR documentation and official correspondence, and the current subscription is due to expire at the end of next month.
+
+I have completed the internal procurement form (attached as PurchaseOrder_SignumPro24.pdf) and included the latest vendor quotation, but I am unsure whether an updated Data Processing Agreement is required for this renewal, given that the vendor’s privacy policy was revised earlier this year. Could you please clarify if additional documentation is necessary or if the previous DPA on file remains valid?
+
+Additionally, we would appreciate confirmation on the estimated processing time for the order, as we would like to avoid any service interruption for the HR and Payroll teams. If there are any new steps in the workflow or changes to the approval chain since last year’s renewal, kindly let me know.
+
+Thank you in advance for your guidance and support.
+
+Best regards,
+
+Jean-Michel Leroy
+Administrative Assistant
+Directorate-General for Human Resources
+European Commission",2024-04-08T00:00:00,jean-michel.leroy@ec.europa.eu,Trash,Trash,SMS,True,SignumPro Suite Licence Renewal: Purchase Order Submission and DPA Clarification Required,"Dear CERT-EU Administrative Team,
+
+I hope this message finds you well. I am writing to request your assistance with the purchase order process for the upcoming renewal of our digital signature software licences (SignumPro Suite). Our department relies on this tool for processing internal HR documentation and official correspondence, and the current subscription is due to expire at the end of next month.
+
+I have completed the internal procurement form (attached as PurchaseOrder_SignumPro24.pdf) and included the latest vendor quotation, but I am unsure whether an updated Data Processing Agreement is required for this renewal, given that the vendor’s privacy policy was revised earlier this year. Could you please clarify if additional documentation is necessary or if the previous DPA on file remains valid?
+
+Additionally, we would appreciate confirmation on the estimated processing time for the order, as we would like to avoid any service interruption for the HR and Payroll teams. If there are any new steps in the workflow or changes to the approval chain since last year’s renewal, kindly let me know.
+
+Thank you in advance for your guidance and support.
+
+Best regards,
+
+Jean-Michel Leroy
+Administrative Assistant
+Directorate-General for Human Resources
+European Commission",2024-04-08T00:00:00,jean-michel.leroy@ec.europa.eu,SMS
