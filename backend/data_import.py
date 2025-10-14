@@ -27,8 +27,17 @@ def import_test_predictions():
         # Check if data already exists
         existing_tickets = db.query(Ticket).count()
         if existing_tickets > 0:
-            print(f"✅ Data already exists ({existing_tickets} tickets), skipping import")
-            return {"message": f"Data already exists ({existing_tickets} tickets)", "status": "skipped"}
+            print(f"⚠️  Data already exists ({existing_tickets} tickets)")
+            # If we have very few tickets, clear and reimport
+            if existing_tickets < 10:
+                print(f"🔄 Clearing existing data and reimporting...")
+                db.query(Prediction).delete()
+                db.query(Ticket).delete()
+                db.commit()
+                print(f"✅ Cleared {existing_tickets} existing tickets")
+            else:
+                print(f"✅ Data already exists ({existing_tickets} tickets), skipping import")
+                return {"message": f"Data already exists ({existing_tickets} tickets)", "status": "skipped"}
         
         # Path to test predictions file
         predictions_file = Path("/app/test_predictions.jsonl")
