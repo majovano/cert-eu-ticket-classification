@@ -40,7 +40,7 @@ from database import (
     SystemConfig, TicketCreate, PredictionCreate, FeedbackCreate,
     TicketResponse, PredictionResponse, DashboardStats, QueuePerformance
 )
-# from time_series_predictor import TimeSeriesPredictor
+from time_series_predictor import TimeSeriesPredictor
 
 # Import ML components (with error handling for missing model)
 try:
@@ -95,8 +95,8 @@ model = None
 processor = None
 class_names = None
 
-# Time series predictor (disabled for now)
-# time_series_predictor = TimeSeriesPredictor()
+# Time series predictor
+time_series_predictor = TimeSeriesPredictor()
 
 # Initialize ML components
 def load_model():
@@ -1237,7 +1237,49 @@ async def get_filtered_report(
             detail=f"Failed to get filtered report: {str(e)}"
         )
 
-# Time Series endpoints disabled for now due to dependency conflicts
+# Time Series endpoints
+@app.get("/api/time-series/forecast")
+async def get_forecast(
+    days: int = 30,
+    queue: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """Get time series forecast for ticket volumes"""
+    try:
+        forecast_data = time_series_predictor.generate_forecast(
+            db=db,
+            days=days,
+            queue=queue
+        )
+        return forecast_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Forecast generation failed: {str(e)}")
+
+@app.get("/api/time-series/historical")
+async def get_historical_data(
+    days: int = 90,
+    queue: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """Get historical ticket data for time series analysis"""
+    try:
+        historical_data = time_series_predictor.get_historical_data(
+            db=db,
+            days=days,
+            queue=queue
+        )
+        return historical_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Historical data retrieval failed: {str(e)}")
+
+@app.get("/api/time-series/trends")
+async def get_trends(db: Session = Depends(get_db)):
+    """Get trend analysis for different queues"""
+    try:
+        trends = time_series_predictor.analyze_trends(db=db)
+        return trends
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Trend analysis failed: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn
