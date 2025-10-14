@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: cert-eu-ticket-classification
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./cert_eu.db
+      - key: SECRET_KEY
+        generateValue: true
+      - key: SMTP_SERVER
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USERNAME
+        value: mjovanovjr@gmail.com
+      - key: SMTP_PASSWORD
+        value: ttizkzzoregfazqy
