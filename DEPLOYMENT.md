@@ -3,9 +3,9 @@
 ## Overview
 This guide will help you deploy your CERT-EU Ticket Classification System to make it accessible to anyone via a web link.
 
-## 🎯 Recommended Deployment Platform: Railway
+## 🎯 Recommended Deployment Platform: Render
 
-Railway is perfect for this project because:
+Render is perfect for this project because:
 - ✅ Easy deployment with Docker
 - ✅ Built-in PostgreSQL database
 - ✅ Automatic HTTPS/SSL
@@ -34,19 +34,19 @@ ENVIRONMENT=production
 
 ## 🚀 Deployment Steps
 
-### Option 1: Railway (Recommended)
+### Option 1: Render (Recommended)
 
-1. **Sign up for Railway**
-   - Go to [railway.app](https://railway.app)
+1. **Sign up for Render**
+   - Go to [render.com](https://render.com)
    - Sign up with GitHub
 
 2. **Connect Your Repository**
-   - Click "New Project"
+   - Click "New +" → "Web Service"
    - Select "Deploy from GitHub repo"
    - Choose your repository
 
 3. **Configure Services**
-   - Railway will detect your Dockerfile
+   - Render will detect your Dockerfile
    - Add PostgreSQL database:
      - Click "New" → "Database" → "PostgreSQL"
    - Copy the DATABASE_URL from the database service
@@ -56,10 +56,10 @@ ENVIRONMENT=production
    - Add all environment variables from the checklist above
 
 5. **Deploy**
-   - Railway will automatically build and deploy
-   - Your app will be available at `https://your-app-name.railway.app`
+   - Render will automatically build and deploy
+   - Your app will be available at `https://your-app-name.onrender.com`
 
-### Option 2: Render
+### Option 2: Heroku
 
 1. **Sign up for Render**
    - Go to [render.com](https://render.com)
@@ -128,7 +128,7 @@ ENVIRONMENT=production
 ### 2. Import Test Data (Optional)
 If you want to populate with sample data:
 ```bash
-# For Railway/Render (via their console)
+# For Render (via their console)
 python data_import.py
 
 # For Heroku
@@ -136,7 +136,7 @@ heroku run python data_import.py
 ```
 
 ### 3. Set Up Custom Domain (Optional)
-- Railway: Go to settings → Domains
+- Render: Go to settings → Domains
 - Render: Go to settings → Custom Domains
 - Heroku: Go to settings → Domains
 
@@ -162,7 +162,7 @@ heroku run python data_import.py
    - Verify file permissions
 
 ### Logs
-- Railway: View logs in the dashboard
+- Render: View logs in the dashboard
 - Render: Check logs in the service view
 - Heroku: `heroku logs --tail`
 
