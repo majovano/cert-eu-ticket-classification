@@ -24,11 +24,17 @@ const TicketAnalyzer = () => {
 
   const handleFileUpload = (e) => {
     const uploadedFile = e.target.files[0];
-    if (uploadedFile && uploadedFile.type === 'application/json') {
+    const fileName = uploadedFile.name.toLowerCase();
+    const isValidFile = uploadedFile.type === 'application/json' || 
+                       uploadedFile.type === 'text/plain' ||
+                       fileName.endsWith('.json') || 
+                       fileName.endsWith('.jsonl');
+    
+    if (uploadedFile && isValidFile) {
       setFile(uploadedFile);
       toast.success('File uploaded successfully');
     } else {
-      toast.error('Please upload a JSON file');
+      toast.error('Please upload a JSON or JSONL file');
     }
   };
 
@@ -68,11 +74,13 @@ const TicketAnalyzer = () => {
         }
       });
       
-      toast.success(`Batch analysis completed: ${response.data.total_processed} tickets processed`);
+      const message = response.data.message || `Successfully processed ${response.data.results?.length || 0} tickets`;
+      toast.success(`Batch analysis completed: ${message}`);
       setPrediction(null); // Clear single prediction
     } catch (error) {
       console.error('Error analyzing batch:', error);
-      toast.error('Failed to analyze batch');
+      const errorMessage = error.response?.data?.detail || error.message || 'Failed to analyze batch';
+      toast.error(`Batch analysis failed: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -203,11 +211,11 @@ const TicketAnalyzer = () => {
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
               <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <p className="text-sm text-gray-600 mb-2">
-                Upload JSONL file for batch processing
+                Upload JSON or JSONL file for batch processing
               </p>
               <input
                 type="file"
-                accept=".json,.jsonl"
+                accept=".json,.jsonl,application/json,text/plain"
                 onChange={handleFileUpload}
                 className="hidden"
                 id="file-upload"
