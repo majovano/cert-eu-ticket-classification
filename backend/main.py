@@ -179,6 +179,27 @@ async def health_check():
         "class_names": class_names if class_names else []
     }
 
+@app.post("/api/admin/import-sample-data")
+async def import_sample_data(db: Session = Depends(get_db)):
+    """Import sample data for demo purposes"""
+    try:
+        # Check if data already exists
+        existing_tickets = db.query(Ticket).count()
+        if existing_tickets > 0:
+            return {"message": f"Data already exists ({existing_tickets} tickets)", "status": "skipped"}
+        
+        # Import sample data
+        from data_import import import_test_predictions
+        result = import_test_predictions()
+        
+        return {
+            "message": "Sample data imported successfully",
+            "status": "success",
+            "details": result
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to import sample data: {str(e)}")
+
 # Dashboard endpoints
 @app.get("/api/dashboard/stats", response_model=DashboardStats)
 async def get_dashboard_stats(db: Session = Depends(get_db)):
