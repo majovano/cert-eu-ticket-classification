@@ -61,12 +61,16 @@ RUN echo 'server { \
 # Create startup script
 RUN echo '#!/bin/bash\n\
 # Import sample data if database is empty\n\
+echo "🔄 Starting data import..."\n\
 python data_import.py\n\
+echo "✅ Data import completed"\n\
 \n\
 # Start backend in background\n\
+echo "🚀 Starting backend..."\n\
 uvicorn main:app --host 0.0.0.0 --port 8000 &\n\
 \n\
 # Start nginx in foreground\n\
+echo "🌐 Starting nginx..."\n\
 nginx -g "daemon off;"' > /app/start.sh && chmod +x /app/start.sh
 
 # Expose port

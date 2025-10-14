@@ -19,26 +19,40 @@ import numpy as np
 def import_test_predictions():
     """Import test predictions from JSONL file"""
     
-    # Initialize database
-    create_tables()
-    db = SessionLocal()
-    
     try:
+        # Initialize database
+        create_tables()
+        db = SessionLocal()
+        
+        # Check if data already exists
+        existing_tickets = db.query(Ticket).count()
+        if existing_tickets > 0:
+            print(f"✅ Data already exists ({existing_tickets} tickets), skipping import")
+            return {"message": f"Data already exists ({existing_tickets} tickets)", "status": "skipped"}
+        
         # Path to test predictions file
         predictions_file = Path("/app/test_predictions.jsonl")
         
         if not predictions_file.exists():
             print(f"❌ File not found: {predictions_file}")
-            return
+            # Try alternative path
+            predictions_file = Path("test_predictions.jsonl")
+            if not predictions_file.exists():
+                print(f"❌ File not found at alternative path: {predictions_file}")
+                return {"error": "Test predictions file not found"}
         
         print(f"📁 Loading predictions from: {predictions_file}")
         
         # Read predictions
         predictions_data = []
         with open(predictions_file, 'r', encoding='utf-8') as f:
-            for line in f:
+            for line_num, line in enumerate(f, 1):
                 if line.strip():
-                    predictions_data.append(json.loads(line.strip()))
+                    try:
+                        predictions_data.append(json.loads(line.strip()))
+                    except json.JSONDecodeError as e:
+                        print(f"⚠️  Skipping invalid JSON on line {line_num}: {e}")
+                        continue
         
         print(f"📊 Found {len(predictions_data)} predictions to import")
         
@@ -153,11 +167,23 @@ def import_test_predictions():
         for routing, count in routing_stats:
             print(f"   {routing}: {count}")
         
+        return {
+            "message": f"Successfully imported {imported_count} predictions",
+            "status": "success",
+            "total_tickets": total_tickets,
+            "total_predictions": total_predictions
+        }
+        
     except Exception as e:
         print(f"❌ Import failed: {e}")
-        db.rollback()
+        import traceback
+        traceback.print_exc()
+        if 'db' in locals():
+            db.rollback()
+        return {"error": str(e), "status": "failed"}
     finally:
-        db.close()
+        if 'db' in locals():
+            db.close()
 
 if __name__ == "__main__":
     import_test_predictions()
