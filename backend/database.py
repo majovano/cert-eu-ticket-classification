@@ -6,6 +6,7 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import String as SQLString
 import uuid
 from datetime import datetime
 from typing import Optional
@@ -16,9 +17,18 @@ from typing import List, Dict, Any
 
 # Database URL - will be set from environment variables
 import os
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://cert_user:cert_password@postgres:5432/cert_eu_db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./cert_eu.db")
 
-engine = create_engine(DATABASE_URL)
+# Use SQLite for production deployment if PostgreSQL is not available
+if DATABASE_URL.startswith("postgresql://"):
+    try:
+        engine = create_engine(DATABASE_URL)
+    except Exception as e:
+        print(f"PostgreSQL not available, falling back to SQLite: {e}")
+        DATABASE_URL = "sqlite:///./cert_eu.db"
+        engine = create_engine(DATABASE_URL)
+else:
+    engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -26,7 +36,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     email = Column(String(255), unique=True, nullable=False)
     name = Column(String(255), nullable=False)
     department = Column(String(255))
@@ -38,7 +48,7 @@ class User(Base):
 class Ticket(Base):
     __tablename__ = "tickets"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     ticket_id = Column(String(50), unique=True, nullable=False)
     title = Column(Text, nullable=False)
     content = Column(Text, nullable=False)
@@ -51,8 +61,8 @@ class Ticket(Base):
 class Prediction(Base):
     __tablename__ = "predictions"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    ticket_id = Column(UUID(as_uuid=True), ForeignKey("tickets.id", ondelete="CASCADE"))
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ticket_id = Column(String(36), ForeignKey("tickets.id", ondelete="CASCADE"))
     predicted_queue = Column(String(50), nullable=False)
     confidence_score = Column(DECIMAL(5, 4), nullable=False)
     all_probabilities = Column(JSON)
@@ -65,9 +75,9 @@ class Prediction(Base):
 class Feedback(Base):
     __tablename__ = "feedback"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    prediction_id = Column(UUID(as_uuid=True), ForeignKey("predictions.id", ondelete="CASCADE"))
-    reviewer_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    prediction_id = Column(String(36), ForeignKey("predictions.id", ondelete="CASCADE"))
+    reviewer_id = Column(String(36), ForeignKey("users.id"))
     corrected_queue = Column(String(50))
     feedback_notes = Column(Text)
     keywords_highlighted = Column(JSON)
@@ -78,9 +88,9 @@ class Feedback(Base):
 class AmbiguousBatch(Base):
     __tablename__ = "ambiguous_batches"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     batch_name = Column(String(255), nullable=False)
-    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    created_by = Column(String(36), ForeignKey("users.id"))
     status = Column(String(20), default="pending")
     total_tickets = Column(Integer, nullable=False)
     reviewed_tickets = Column(Integer, default=0)
@@ -91,10 +101,10 @@ class AmbiguousBatch(Base):
 class AmbiguousTicket(Base):
     __tablename__ = "ambiguous_tickets"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    batch_id = Column(UUID(as_uuid=True), ForeignKey("ambiguous_batches.id", ondelete="CASCADE"))
-    prediction_id = Column(UUID(as_uuid=True), ForeignKey("predictions.id", ondelete="CASCADE"))
-    assigned_reviewer_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    batch_id = Column(String(36), ForeignKey("ambiguous_batches.id", ondelete="CASCADE"))
+    prediction_id = Column(String(36), ForeignKey("predictions.id", ondelete="CASCADE"))
+    assigned_reviewer_id = Column(String(36), ForeignKey("users.id"))
     review_link = Column(String(500))
     status = Column(String(20), default="pending")
     reviewed_at = Column(DateTime(timezone=True))
@@ -102,7 +112,7 @@ class AmbiguousTicket(Base):
 class ModelMetric(Base):
     __tablename__ = "model_metrics"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     metric_name = Column(String(100), nullable=False)
     metric_value = Column(DECIMAL(10, 6), nullable=False)
     metric_type = Column(String(50))
@@ -115,7 +125,7 @@ class ModelMetric(Base):
 class CategoryKeyword(Base):
     __tablename__ = "category_keywords"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     queue_name = Column(String(50), nullable=False)
     keyword = Column(String(100), nullable=False)
     frequency = Column(Integer, default=1)
@@ -125,12 +135,12 @@ class CategoryKeyword(Base):
 class SystemConfig(Base):
     __tablename__ = "system_config"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     config_key = Column(String(100), unique=True, nullable=False)
     config_value = Column(Text, nullable=False)
     description = Column(Text)
     updated_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    updated_by = Column(String(36), ForeignKey("users.id"))
 
 # Pydantic models for API
 class TicketCreate(BaseModel):

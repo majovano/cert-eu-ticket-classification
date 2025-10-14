@@ -25,7 +25,13 @@ const Layout = ({ children }) => {
     { name: 'Time Series Forecast', href: '/forecast', icon: TrendingUp },
   ];
 
-  const isActive = (href) => location.pathname === href;
+  const isActive = (href) => {
+    // Handle root path specially
+    if (href === '/' && location.pathname === '/') return true;
+    if (href === '/' && location.pathname !== '/') return false;
+    // For other paths, check if they match
+    return location.pathname === href;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -38,7 +44,7 @@ const Layout = ({ children }) => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         {/* Header */}
@@ -74,7 +80,10 @@ const Layout = ({ children }) => {
                         ? 'bg-eu-blue-50 text-eu-blue-700 border-r-2 border-eu-blue-500'
                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                     }`}
-                    onClick={() => setSidebarOpen(false)}
+                    onClick={() => {
+                      console.log('Navigating to:', item.href);
+                      setSidebarOpen(false);
+                    }}
                   >
                     <Icon className={`w-5 h-5 mr-3 ${
                       isActive(item.href) ? 'text-eu-blue-600' : 'text-gray-400'
@@ -88,7 +97,7 @@ const Layout = ({ children }) => {
         </nav>
 
         {/* Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-200">
+        <div className="mt-auto p-6 border-t border-gray-200">
           <div className="text-xs text-gray-500 text-center">
             <p>European Union</p>
             <p>Cybersecurity Emergency Response Team</p>
