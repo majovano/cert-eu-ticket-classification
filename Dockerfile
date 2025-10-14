@@ -29,6 +29,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ .
 COPY code/ /app/code/
 
+# Copy test data for import
+COPY backend/test_predictions.jsonl /app/test_predictions.jsonl
+
 # Copy built frontend
 COPY --from=frontend-builder /app/frontend/build /app/frontend/build
 
@@ -57,6 +60,9 @@ RUN echo 'server { \
 
 # Create startup script
 RUN echo '#!/bin/bash\n\
+# Import sample data if database is empty\n\
+python data_import.py\n\
+\n\
 # Start backend in background\n\
 uvicorn main:app --host 0.0.0.0 --port 8000 &\n\
 \n\
