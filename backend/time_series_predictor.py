@@ -22,7 +22,7 @@ class TimeSeriesPredictor:
     Time series predictor for forecasting ticket volumes by queue
     """
     
-    def __init__(self, model_dir: str = "/app/models/time_series"):
+    def __init__(self, model_dir: str = "./models/time_series"):
         self.model_dir = Path(model_dir)
         # Create parent directory if it doesn't exist
         self.model_dir.parent.mkdir(parents=True, exist_ok=True)
@@ -48,16 +48,16 @@ class TimeSeriesPredictor:
             
             # Query predictions grouped by date and queue
             query = db.query(
-                func.date(Prediction.created_at).label('date'),
+                func.date(Prediction.prediction_timestamp).label('date'),
                 Prediction.predicted_queue.label('queue'),
                 func.count(Prediction.id).label('ticket_count')
             ).filter(
                 and_(
-                    Prediction.created_at >= start_date,
-                    Prediction.created_at <= end_date
+                    Prediction.prediction_timestamp >= start_date,
+                    Prediction.prediction_timestamp <= end_date
                 )
             ).group_by(
-                func.date(Prediction.created_at),
+                func.date(Prediction.prediction_timestamp),
                 Prediction.predicted_queue
             ).order_by('date', 'queue')
             
