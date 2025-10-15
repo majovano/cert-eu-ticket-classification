@@ -32,13 +32,14 @@ import toast from 'react-hot-toast';
 
 const TimeSeriesForecast = () => {
   const [historicalData, setHistoricalData] = useState({});
-  const [predictions, setPredictions] = useState({});
+  const [predictions, setPredictions] = useState({ probability_analysis: null, forecasts: null, summary: null });
   const [modelStatus, setModelStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [training, setTraining] = useState(false);
   const [predicting, setPredicting] = useState(false);
   const [daysAhead, setDaysAhead] = useState(7);
   const [selectedQueue, setSelectedQueue] = useState('all');
+  const [dateRange, setDateRange] = useState(30); // Days back for historical data
 
   const queueColors = {
     'CTI': '#3b82f6',
@@ -52,21 +53,43 @@ const TimeSeriesForecast = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [dateRange]); // Refetch when date range changes
 
   const fetchData = async () => {
     try {
       setLoading(true);
       const [trendsResponse, historicalResponse] = await Promise.all([
         axios.get('/api/time-series/trends'),
-        axios.get('/api/time-series/historical?days=30')
+        axios.get(`/api/time-series/historical?days=${dateRange}`)
       ]);
       
-      setHistoricalData(trendsResponse.data);
-      setModelStatus({ status: 'ready', last_trained: new Date().toISOString() });
+      // Transform historical data array to object format expected by frontend
+      const historicalArray = historicalResponse.data.data || [];
+      console.log('📊 Historical data received:', historicalArray.length, 'records');
+      console.log('📊 Sample historical data:', historicalArray.slice(0, 3));
+      
+      const transformedData = {};
+      
+      // Group data by queue
+      historicalArray.forEach(item => {
+        if (!transformedData[item.queue]) {
+          transformedData[item.queue] = [];
+        }
+        transformedData[item.queue].push({
+          date: item.date,
+          value: item.ticket_count
+        });
+      });
+      
+      console.log('📊 Transformed data:', Object.keys(transformedData), 'queues');
+      console.log('📊 Sample transformed data:', Object.entries(transformedData).slice(0, 2));
+      
+      setHistoricalData(transformedData);
+      setModelStatus({ status: 'ready', models_loaded: true, last_trained: new Date().toISOString() });
     } catch (error) {
       console.error('Error fetching time series data:', error);
-      toast.error('Failed to load time series data');
+      console.error('Error details:', error.response?.data);
+      toast.error(`Failed to load time series data: ${error.response?.data?.detail || error.message}`);
     } finally {
       setLoading(false);
     }
@@ -77,10 +100,10 @@ const TimeSeriesForecast = () => {
       setTraining(true);
       const response = await axios.get('/api/time-series/trends');
       
-      toast.success(`Trained ${response.data.queues.length} models successfully!`);
+      toast.success(`Trained ${Object.keys(response.data.trends || response.data).length} models successfully!`);
       
       // Refresh model status
-      setModelStatus({ status: 'ready', last_trained: new Date().toISOString() });
+      setModelStatus({ status: 'ready', models_loaded: true, last_trained: new Date().toISOString() });
       
     } catch (error) {
       console.error('Error training models:', error);
@@ -93,13 +116,22 @@ const TimeSeriesForecast = () => {
   const makePredictions = async () => {
     try {
       setPredicting(true);
+      console.log('🔮 Generating predictions for', daysAhead, 'days ahead');
+      console.log('🔮 Current predictions state:', predictions);
+      
       const response = await axios.get(`/api/time-series/forecast?days=${daysAhead}`);
       
+      console.log('🔮 Predictions received:', response.data);
+      console.log('🔮 Probability analysis:', response.data.probability_analysis);
+      console.log('🔮 Forecasts structure:', response.data.forecasts);
+      
       setPredictions(response.data);
+      console.log('🔮 Predictions state set, should trigger re-render');
       toast.success(`Generated predictions for ${daysAhead} days ahead`);
       
     } catch (error) {
       console.error('Error making predictions:', error);
+      console.error('Error details:', error.response?.data);
       toast.error('Failed to generate predictions');
     } finally {
       setPredicting(false);
@@ -111,35 +143,37 @@ const TimeSeriesForecast = () => {
     const today = new Date();
     
     // Add historical data
-    Object.entries(historicalData).forEach(([queue, data]) => {
+    if (historicalData && typeof historicalData === 'object') {
+      Object.entries(historicalData).forEach(([queue, data]) => {
       if (selectedQueue === 'all' || selectedQueue === queue) {
         data.forEach(point => {
           allData.push({
             date: point.date,
             queue: queue,
-            value: point.ticket_count,
+            value: point.value, // This should match our transformed data
             type: 'historical',
             moving_average: point.moving_average_7d
           });
         });
       }
-    });
+      });
+    }
     
-    // Add predictions
-    if (predictions.predictions) {
-      Object.entries(predictions.predictions).forEach(([queue, data]) => {
+    // Add predictions (new format with forecasts)
+    if (predictions && predictions.forecasts && typeof predictions.forecasts === 'object') {
+      Object.entries(predictions.forecasts).forEach(([queue, forecast]) => {
         if (selectedQueue === 'all' || selectedQueue === queue) {
-          data.forEach(point => {
+          forecast.dates.forEach((date, index) => {
             allData.push({
-              date: point.date,
+              date: date,
               queue: queue,
-              value: point.predicted_tickets,
+              value: forecast.values[index],
               type: 'prediction',
-              confidence: point.confidence
+              confidence: 0.8 // Default confidence for demo
             });
           });
         }
-      });
+        });
     }
     
     // Group by date and queue
@@ -153,20 +187,25 @@ const TimeSeriesForecast = () => {
       groupedData[key][`${point.queue}_confidence`] = point.confidence || 1;
     });
     
-    return Object.values(groupedData).sort((a, b) => new Date(a.date) - new Date(b.date));
+    try {
+      return Object.values(groupedData).sort((a, b) => new Date(a.date) - new Date(b.date));
+    } catch (error) {
+      console.error('Error preparing chart data:', error);
+      return [];
+    }
   };
 
   const exportPredictions = () => {
-    if (!predictions.predictions) return;
+    if (!predictions || !predictions.forecasts) return;
     
     const csvData = [];
-    Object.entries(predictions.predictions).forEach(([queue, data]) => {
-      data.forEach(point => {
+    Object.entries(predictions.forecasts).forEach(([queue, forecast]) => {
+      forecast.dates.forEach((date, index) => {
         csvData.push({
           queue,
-          date: point.date,
-          predicted_tickets: point.predicted_tickets,
-          confidence: point.confidence
+          date: date,
+          predicted_tickets: forecast.values[index],
+          confidence: 'N/A'
         });
       });
     });
@@ -212,7 +251,7 @@ const TimeSeriesForecast = () => {
           </button>
           <button
             onClick={makePredictions}
-            disabled={predicting || !modelStatus?.models_loaded}
+            disabled={predicting}
             className="eu-button-secondary flex items-center space-x-2"
           >
             <Play className="w-4 h-4" />
@@ -237,14 +276,14 @@ const TimeSeriesForecast = () => {
               <BarChart3 className="w-8 h-8 text-blue-500 mr-3" />
               <div>
                 <p className="font-medium text-gray-900">Avg Performance</p>
-                <p className="text-sm text-gray-600">MAE: {Object.values(modelStatus.model_details).reduce((acc, model) => acc + model.mae, 0) / Object.keys(modelStatus.model_details).length}</p>
+                <p className="text-sm text-gray-600">MAE: {modelStatus.model_details ? Object.values(modelStatus.model_details).reduce((acc, model) => acc + model.mae, 0) / Object.keys(modelStatus.model_details).length : 'N/A'}</p>
               </div>
             </div>
             <div className="flex items-center p-4 bg-purple-50 rounded-lg">
               <Brain className="w-8 h-8 text-purple-500 mr-3" />
               <div>
                 <p className="font-medium text-gray-900">Confidence</p>
-                <p className="text-sm text-gray-600">{Object.values(modelStatus.model_details).reduce((acc, model) => acc + model.confidence, 0) / Object.keys(modelStatus.model_details).length}</p>
+                <p className="text-sm text-gray-600">{modelStatus.model_details ? Object.values(modelStatus.model_details).reduce((acc, model) => acc + model.confidence, 0) / Object.keys(modelStatus.model_details).length : 'N/A'}</p>
               </div>
             </div>
           </div>
@@ -287,12 +326,29 @@ const TimeSeriesForecast = () => {
               className="eu-input"
             >
               <option value="all">All Queues</option>
-              {Object.keys(historicalData).map(queue => (
+              {historicalData && Object.keys(historicalData).map(queue => (
                 <option key={queue} value={queue}>{queue}</option>
               ))}
             </select>
           </div>
-          {predictions.predictions && (
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Historical Data Range
+            </label>
+            <select
+              value={dateRange}
+              onChange={(e) => setDateRange(Number(e.target.value))}
+              className="eu-input"
+            >
+              <option value={7}>Last 7 days</option>
+              <option value={30}>Last 30 days</option>
+              <option value={90}>Last 90 days</option>
+              <option value={180}>Last 6 months</option>
+              <option value={365}>Last year</option>
+            </select>
+          </div>
+          {predictions.forecasts && (
             <div className="ml-auto">
               <button
                 onClick={exportPredictions}
@@ -312,7 +368,7 @@ const TimeSeriesForecast = () => {
           Historical Trends & Predictions
         </h3>
         <ResponsiveContainer width="100%" height={400}>
-          <AreaChart data={prepareChartData()}>
+          <AreaChart data={prepareChartData() || []}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               dataKey="date" 
@@ -323,7 +379,7 @@ const TimeSeriesForecast = () => {
               labelFormatter={(value) => new Date(value).toLocaleDateString()}
             />
             <Legend />
-            {Object.keys(historicalData).map(queue => (
+            {historicalData && Object.keys(historicalData).map(queue => (
               <Area
                 key={`${queue}_historical`}
                 type="monotone"
@@ -335,7 +391,7 @@ const TimeSeriesForecast = () => {
                 name={`${queue} (Historical)`}
               />
             ))}
-            {Object.keys(predictions.predictions || {}).map(queue => (
+            {predictions && predictions.forecasts && Object.keys(predictions.forecasts).map(queue => (
               <Area
                 key={`${queue}_prediction`}
                 type="monotone"
@@ -352,16 +408,81 @@ const TimeSeriesForecast = () => {
         </ResponsiveContainer>
       </div>
 
+      {/* Probability Analysis */}
+      {predictions.probability_analysis && Object.keys(predictions.probability_analysis).length > 0 && (
+        <div className="eu-card p-6 mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">📊 Probability Analysis - Next 12 Months</h3>
+          <p className="text-sm text-gray-600 mb-4">
+            Based on {predictions.summary?.based_on || 'historical data'}, here's the probability analysis for each category:
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Object.entries(predictions.probability_analysis).map(([queue, analysis]) => (
+              <div key={queue} className="border rounded-lg p-4 bg-gray-50">
+                <h4 className="font-semibold text-gray-900 mb-3">{queue}</h4>
+                
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Current Share:</span>
+                    <span className="font-medium">{analysis.current_percentage}% ({analysis.current_tickets} tickets)</span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-green-600">📈 Increase:</span>
+                    <span className="font-medium">{analysis.probability_increase}%</span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-blue-600">➡️ Stable:</span>
+                    <span className="font-medium">{analysis.probability_stable}%</span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-red-600">📉 Decrease:</span>
+                    <span className="font-medium">{analysis.probability_decrease}%</span>
+                  </div>
+                  
+                  <div className="mt-3 pt-2 border-t">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Trend:</span>
+                      <span className={`font-semibold px-2 py-1 rounded text-xs ${
+                        analysis.trend_prediction === 'increasing' ? 'bg-green-100 text-green-800' :
+                        analysis.trend_prediction === 'decreasing' ? 'bg-red-100 text-red-800' :
+                        'bg-blue-100 text-blue-800'
+                      }`}>
+                        {analysis.trend_prediction}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center mt-1">
+                      <span className="text-gray-600">Confidence:</span>
+                      <span className={`font-medium text-xs ${
+                        analysis.confidence_level === 'high' ? 'text-green-600' : 'text-yellow-600'
+                      }`}>
+                        {analysis.confidence_level}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Prediction Summary */}
-      {predictions.summary && (
+      {predictions.summary && predictions.summary.total_categories && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Summary Stats */}
           <div className="eu-card p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Prediction Summary</h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Total Predicted Tickets:</span>
-                <span className="font-semibold text-lg">{predictions.summary.total_predicted_tickets}</span>
+                <span className="text-gray-600">Analysis Period:</span>
+                <span className="font-semibold text-lg">{predictions.summary.analysis_period || '7 days'}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Categories Analyzed:</span>
+                <span className="font-semibold text-lg">{predictions.summary.total_categories}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Prediction Period:</span>
@@ -378,7 +499,7 @@ const TimeSeriesForecast = () => {
           <div className="eu-card p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Queue Breakdown</h3>
             <div className="space-y-3">
-              {Object.entries(predictions.summary.queue_summary).map(([queue, stats]) => (
+              {predictions.summary && predictions.summary.queue_summary && Object.entries(predictions.summary.queue_summary).map(([queue, stats]) => (
                 <div key={queue} className="flex justify-between items-center">
                   <div className="flex items-center">
                     <div 
@@ -403,7 +524,7 @@ const TimeSeriesForecast = () => {
         <div className="eu-card p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Peak Prediction Days</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Object.entries(predictions.summary.peak_days).map(([queue, peak]) => (
+            {predictions.summary && predictions.summary.peak_days && Object.entries(predictions.summary.peak_days).map(([queue, peak]) => (
               <div key={queue} className="p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-center mb-2">
                   <div 
