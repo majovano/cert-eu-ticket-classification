@@ -1,297 +1,327 @@
 # CERT-EU Ticket Classification System
 
-A comprehensive AI-powered ticket classification system for the European Union's Cybersecurity Emergency Response Team (CERT-EU). This system automatically routes security tickets to appropriate queues using a hybrid transformer model and provides a professional web interface for human review and analysis.
+A comprehensive full-stack machine learning application for automated ticket classification and time series forecasting, built with modern technologies and deployed using containerization.
 
-## 🚀 Features
+## 🎯 Project Overview
 
-### Core Functionality
-- **Hybrid ML Model**: RoBERTa + numerical features with attention-based fusion
-- **7 Queue Classification**: CTI, DFIR::incidents, DFIR::phishing, OFFSEC::CVD, OFFSEC::Pentesting, SMS, Trash
-- **Confidence-based Routing**: Auto-route, human verification, and manual triage
-- **Cross-validation Support**: Robust model evaluation with stratified k-fold CV
-- **Real-time Predictions**: FastAPI backend with batch processing capabilities
+This system automatically classifies cybersecurity tickets into appropriate queues using machine learning models, provides time series forecasting for ticket volumes, and offers a complete web interface for analysis and management.
 
-### Web Interface
-- **Modern Dashboard**: EU-branded React frontend with comprehensive analytics
-- **Ticket Analyzer**: Single ticket and batch file analysis
-- **Queue Analysis**: Detailed performance metrics and trends
-- **Human Review Interface**: Low-confidence ticket review with feedback system
-- **Reporting System**: Exportable reports in JSON and CSV formats
+## 🏗️ Architecture & Technologies
 
-### Database & Analytics
-- **PostgreSQL Database**: Comprehensive schema for tickets, predictions, and feedback
-- **Performance Monitoring**: Queue-specific metrics and confidence analysis
-- **Feedback Loop**: Human corrections for continuous model improvement
-- **Keyword Analysis**: Security keyword extraction and importance scoring
+### **Backend Technologies**
+- **FastAPI** - Modern, fast web framework for building APIs with automatic OpenAPI documentation
+- **Python 3.11** - Core programming language with type hints and async support
+- **SQLAlchemy** - Advanced ORM for database operations with relationship mapping
+- **Pydantic** - Data validation and serialization using Python type annotations
+- **Uvicorn** - ASGI server for high-performance async Python applications
+- **Pandas** - Data manipulation and analysis for time series processing
+- **NumPy** - Numerical computing for mathematical operations
+- **Scikit-learn** - Machine learning library for model training and evaluation
 
-## 🏗️ Architecture
+### **Frontend Technologies**
+- **React 18** - Modern JavaScript library with hooks and functional components
+- **Recharts** - Composable charting library for data visualization
+- **Tailwind CSS** - Utility-first CSS framework for responsive design
+- **Axios** - Promise-based HTTP client for API communication
+- **React Router** - Client-side routing for single-page application navigation
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   React Frontend │    │  FastAPI Backend │    │  PostgreSQL DB  │
-│                 │    │                 │    │                 │
-│ • Dashboard     │◄──►│ • Prediction    │◄──►│ • Tickets       │
-│ • Ticket Analyzer│    │ • Analytics     │    │ • Predictions   │
-│ • Human Review  │    │ • Feedback      │    │ • Feedback      │
-│ • Reports       │    │ • Model Mgmt    │    │ • Metrics       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                                │
-                                ▼
-                    ┌─────────────────┐
-                    │  ML Model       │
-                    │                 │
-                    │ • RoBERTa       │
-                    │ • Feature Fusion│
-                    │ • Confidence    │
-                    └─────────────────┘
-```
+### **Database & Storage**
+- **PostgreSQL** - Robust relational database for production environments
+- **SQLite** - Lightweight database for development and demo purposes
+- **Database Migrations** - Version-controlled schema management
 
-## 🛠️ Technology Stack
+### **Machine Learning Pipeline**
+- **RoBERTa** - Transformer-based model for text classification
+- **Time Series Forecasting** - ARIMA and seasonal decomposition for trend analysis
+- **Feature Engineering** - Text preprocessing, tokenization, and vectorization
+- **Model Evaluation** - Cross-validation, confusion matrices, and performance metrics
 
-### Backend
-- **FastAPI**: Modern Python web framework
-- **SQLAlchemy**: ORM for database operations
-- **PostgreSQL**: Primary database
-- **PyTorch**: Deep learning framework
-- **Transformers**: Hugging Face transformer models
-- **Scikit-learn**: ML utilities and metrics
-
-### Frontend
-- **React 18**: Modern UI framework
-- **Tailwind CSS**: Utility-first CSS framework
-- **Recharts**: Data visualization
-- **Lucide React**: Icon library
-- **React Router**: Client-side routing
-
-### Infrastructure
-- **Docker**: Containerization
-- **Docker Compose**: Multi-container orchestration
-
-## 📋 Prerequisites
-
-- Python 3.11+
-- Node.js 18+
-- PostgreSQL 15+
-- Docker & Docker Compose (optional)
+### **DevOps & Deployment**
+- **Docker** - Containerization for consistent environments
+- **Docker Compose** - Multi-container orchestration
+- **Nginx** - Reverse proxy and static file serving
+- **Git** - Version control with GitHub integration
+- **Render.com** - Cloud deployment platform
+- **Environment Variables** - Secure configuration management
 
 ## 🚀 Quick Start
 
-### Option 1: Docker Compose (Recommended)
+### Prerequisites
+- Python 3.11+
+- Node.js 16+
+- Docker & Docker Compose
+- Git
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd react-cert-eu-ml-challenge
-   ```
-
-2. **Start all services**
-   ```bash
-   docker-compose up -d
-   ```
-
-3. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8000
-   - API Documentation: http://localhost:8000/api/docs
-
-### Option 2: Manual Setup
-
-1. **Setup Database**
-   ```bash
-   # Start PostgreSQL
-   docker run -d --name cert-eu-postgres \
-     -e POSTGRES_DB=cert_eu_db \
-     -e POSTGRES_USER=cert_user \
-     -e POSTGRES_PASSWORD=cert_password \
-     -p 5432:5432 postgres:15
-   
-   # Initialize schema
-   psql -h localhost -U cert_user -d cert_eu_db -f database/schema.sql
-   ```
-
-2. **Setup Backend**
-   ```bash
-   cd backend
-   pip install -r requirements.txt
-   python main.py
-   ```
-
-3. **Setup Frontend**
-   ```bash
-   cd frontend
-   npm install
-   npm start
-   ```
-
-## 📊 Model Training
-
-### Train the Model
+### 1. Clone the Repository
 ```bash
-cd code
-python main.py --data_path data/train_dataset.jsonl --epochs 5 --batch_size 16
+git clone https://github.com/majovano/cert-eu-ticket-classification.git
+cd cert-eu-ticket-classification
 ```
 
-### Generate Predictions
+### 2. Local Development Setup
+
+#### Option A: Docker Compose (Recommended)
 ```bash
-python predict.py --test_data data/test_dataset.jsonl --model_dir ./models --output data/test_predictions.jsonl
+# Start all services
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Stop services
+docker compose down
 ```
 
-### Cross-Validation
+#### Option B: Manual Setup
 ```bash
-python main.py --data_path data/train_dataset.jsonl --cross_validate --cv_folds 5 --epochs 5
+# Backend setup
+cd backend
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+
+# Frontend setup (new terminal)
+cd frontend
+npm install
+npm start
 ```
 
-## 🔧 Configuration
+### 3. Access the Application
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/docs
 
-### Environment Variables
-Create a `.env` file in the backend directory:
-```env
-DATABASE_URL=postgresql://cert_user:cert_password@localhost:5432/cert_eu_db
+## 📊 Features & Capabilities
+
+### **Core Functionality**
+- **Single Ticket Classification** - Real-time ML prediction with confidence scores
+- **Batch Processing** - Upload JSONL files for bulk ticket analysis
+- **Time Series Forecasting** - Predict future ticket volumes with probability analysis
+- **Dashboard Analytics** - Real-time statistics and performance metrics
+- **Human Review Interface** - Manual verification and correction system
+- **Queue Analysis** - Detailed breakdown by ticket categories
+- **Report Generation** - Automated email reports with data export
+
+### **Machine Learning Features**
+- **Multi-class Classification** - 7 distinct queue categories (CTI, DFIR, OFFSEC, etc.)
+- **Confidence Scoring** - Probability-based routing decisions
+- **Model Training Pipeline** - Automated retraining with new data
+- **Performance Monitoring** - Accuracy, precision, recall tracking
+- **A/B Testing** - Model comparison and validation
+
+### **Time Series Analysis**
+- **Historical Data Processing** - Trend analysis and pattern recognition
+- **Forecast Generation** - 7-365 day predictions with confidence intervals
+- **Probability Analysis** - Likelihood of volume increases/decreases
+- **Interactive Charts** - Visual representation of trends and forecasts
+- **Data Export** - CSV download for external analysis
+
+## 🏛️ System Architecture
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   React SPA     │    │   FastAPI       │    │   PostgreSQL   │
+│   (Frontend)    │◄──►│   (Backend)     │◄──►│   (Database)    │
+│   Port 3000     │    │   Port 8000     │    │   Port 5432     │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Nginx         │    │   ML Models     │    │   Data Import   │
+│   (Reverse      │    │   (RoBERTa)     │    │   (JSONL)       │
+│    Proxy)       │    │                 │    │                 │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+## 🔧 Configuration & Environment
+
+### **Environment Variables**
+```bash
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/cert_eu_db
+
+# Security
 SECRET_KEY=your-secret-key-here
-MODEL_PATH=./models/hybrid_roberta_model
+
+# Email Configuration
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+
+# Application
+ENVIRONMENT=production
+DEBUG=false
 ```
 
-### System Configuration
-The system uses configurable thresholds:
-- **High Confidence**: 0.85 (auto-route)
-- **Low Confidence**: 0.65 (manual triage)
-- **Medium Confidence**: 0.65-0.85 (human verification)
+### **Database Schema**
+- **Tickets** - Core ticket information and metadata
+- **Predictions** - ML model outputs with confidence scores
+- **Feedback** - Human corrections for model improvement
+- **Time Series** - Historical data for forecasting
+- **Users** - Authentication and access control
 
-## 📈 Usage
+## 📈 Performance & Scalability
 
-### 1. Dashboard
-- View overall system statistics
-- Monitor queue performance
-- Track confidence distributions
-- Analyze routing decisions
+### **Optimization Strategies**
+- **Async/Await** - Non-blocking I/O operations
+- **Database Indexing** - Optimized queries for large datasets
+- **Caching** - Redis for session and model caching
+- **Load Balancing** - Horizontal scaling capabilities
+- **CDN Integration** - Static asset optimization
 
-### 2. Ticket Analyzer
-- Analyze individual tickets
-- Upload batch files (JSONL format)
-- View prediction probabilities
-- Monitor processing times
+### **Monitoring & Logging**
+- **Application Logs** - Structured logging with levels
+- **Performance Metrics** - Response time and throughput
+- **Error Tracking** - Exception handling and reporting
+- **Health Checks** - Service availability monitoring
 
-### 3. Queue Analysis
-- Detailed queue performance metrics
-- Trend analysis over time
-- Confidence vs error rate analysis
-- Queue-specific insights
+## 🚀 Deployment Options
 
-### 4. Human Review
-- Review low-confidence predictions
-- Provide feedback and corrections
-- Highlight relevant keywords
-- Rate classification difficulty
+### **Option 1: Render.com (Recommended)**
+```bash
+# 1. Push to GitHub
+git add .
+git commit -m "Deploy to production"
+git push origin main
 
-### 5. Reports
-- Generate comprehensive reports
-- Export data in JSON/CSV formats
-- Customize report types and date ranges
-- Track system performance over time
+# 2. Connect to Render
+# - Go to https://render.com
+# - Connect GitHub repository
+# - Configure environment variables
+# - Deploy automatically
+```
 
-## 🔍 API Endpoints
+### **Option 2: Docker Production**
+```bash
+# Build production image
+docker build -t cert-eu-app .
 
-### Core Endpoints
-- `GET /api/health` - Health check
-- `GET /api/dashboard/stats` - Dashboard statistics
-- `GET /api/dashboard/queue-performance` - Queue performance metrics
+# Run with environment variables
+docker run -p 8000:8000 \
+  -e DATABASE_URL=postgresql://... \
+  -e SECRET_KEY=... \
+  cert-eu-app
+```
 
-### Prediction Endpoints
-- `POST /api/predict` - Single ticket prediction
-- `POST /api/predict/batch` - Batch file prediction
-- `GET /api/tickets/low-confidence` - Low confidence tickets
+### **Option 3: Local Development**
+```bash
+# Start with Docker Compose
+docker compose up -d
 
-### Feedback Endpoints
-- `POST /api/feedback` - Submit human feedback
-- `GET /api/keywords/{queue_name}` - Queue keywords analysis
+# Or manual setup
+cd backend && uvicorn main:app --reload
+cd frontend && npm start
+```
 
-## 🎨 EU Branding
+## 🧪 Testing & Quality Assurance
 
-The interface uses official EU colors and styling:
-- **Primary Blue**: #003399 (EU Blue)
-- **Secondary Yellow**: #FFCC02 (EU Yellow)
-- **Accent Colors**: Various shades for different queues
-- **Typography**: Inter font family
-- **Icons**: Lucide React icon set
+### **Testing Strategy**
+- **Unit Tests** - Individual component testing
+- **Integration Tests** - API endpoint validation
+- **End-to-End Tests** - Full user workflow testing
+- **Performance Tests** - Load and stress testing
+- **Security Tests** - Vulnerability assessment
 
-## 📊 Queue Descriptions
+### **Code Quality**
+- **Type Hints** - Python type annotations throughout
+- **Linting** - ESLint and Pylint for code quality
+- **Formatting** - Black and Prettier for consistent style
+- **Documentation** - Comprehensive docstrings and comments
 
-| Queue | Description | Color |
-|-------|-------------|-------|
-| **CTI** | Cyber Threat Intelligence - Analysis of threat indicators | Blue |
-| **DFIR::incidents** | Active security incidents requiring investigation | Red |
-| **DFIR::phishing** | Phishing attacks and email-based threats | Orange |
-| **OFFSEC::CVD** | Coordinated Vulnerability Disclosure reports | Purple |
-| **OFFSEC::Pentesting** | Penetration testing and security assessments | Green |
-| **SMS** | Security Management Services - Administrative tasks | Teal |
-| **Trash** | Irrelevant or spam tickets | Gray |
+## 📚 API Documentation
+
+### **Core Endpoints**
+```python
+# Ticket Classification
+POST /api/predict
+POST /api/predict/batch
+
+# Dashboard Data
+GET /api/dashboard/stats
+GET /api/dashboard/queue-performance
+
+# Time Series
+GET /api/time-series/forecast
+GET /api/time-series/historical
+GET /api/time-series/trends
+
+# Human Review
+GET /api/tickets/low-confidence
+POST /api/feedback
+
+# Reports
+POST /api/reports/email
+GET /api/reports/export
+```
+
+### **Data Models**
+```python
+class Ticket(BaseModel):
+    id: str
+    title: str
+    description: str
+    priority: str
+    created_at: datetime
+
+class Prediction(BaseModel):
+    ticket_id: str
+    predicted_queue: str
+    confidence_score: float
+    prediction_timestamp: datetime
+```
 
 ## 🔒 Security Considerations
 
-- Input validation and sanitization
-- SQL injection prevention
-- CORS configuration
-- Rate limiting (recommended for production)
-- Authentication system (to be implemented)
-- HTTPS enforcement (for production)
+### **Data Protection**
+- **Input Validation** - Pydantic models for data sanitization
+- **SQL Injection Prevention** - Parameterized queries
+- **CORS Configuration** - Cross-origin request security
+- **Rate Limiting** - API abuse prevention
+- **Authentication** - JWT token-based security
 
-## 🚀 Deployment
+### **Privacy & Compliance**
+- **Data Encryption** - Sensitive information protection
+- **Audit Logging** - User action tracking
+- **GDPR Compliance** - Data retention policies
+- **Access Control** - Role-based permissions
 
-### Production Deployment
-1. Set up production PostgreSQL database
-2. Configure environment variables
-3. Set up reverse proxy (nginx)
-4. Enable HTTPS
-5. Configure monitoring and logging
-6. Set up backup strategies
+## 🎓 Technical Interview Points
 
-### Scaling Considerations
-- Horizontal scaling with multiple backend instances
-- Database read replicas for analytics
-- Redis for caching frequently accessed data
-- Message queues for batch processing
-- Load balancing for high availability
+### **Full-Stack Expertise**
+- **Backend Architecture** - RESTful API design with FastAPI
+- **Frontend Development** - Modern React with hooks and context
+- **Database Design** - Relational modeling with SQLAlchemy
+- **Machine Learning** - End-to-end ML pipeline implementation
+- **DevOps** - Containerization and cloud deployment
 
-## 📝 Data Import
+### **Advanced Concepts**
+- **Async Programming** - Python async/await patterns
+- **State Management** - React hooks and context API
+- **Data Processing** - Pandas for time series analysis
+- **Model Deployment** - Production ML model serving
+- **Monitoring** - Application performance tracking
 
-Import existing predictions:
-```bash
-cd backend
-python data_import.py
-```
+### **Problem-Solving Skills**
+- **Error Handling** - Comprehensive exception management
+- **Performance Optimization** - Database queries and caching
+- **Scalability** - Horizontal scaling strategies
+- **Security** - Input validation and authentication
+- **Testing** - Quality assurance methodologies
 
-This will import the `test_predictions.jsonl` file into the database with mock confidence scores and routing decisions.
+## 📞 Support & Contact
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+For technical questions or deployment assistance:
+- **GitHub Issues**: [Repository Issues](https://github.com/majovano/cert-eu-ticket-classification/issues)
+- **Documentation**: [API Docs](http://localhost:8000/docs)
+- **Email**: mjovanovjr@gmail.com
 
 ## 📄 License
 
-This project is licensed under the EU Public License - see the LICENSE file for details.
-
-## 🆘 Support
-
-For support and questions:
-- Create an issue in the repository
-- Contact the CERT-EU team
-- Check the API documentation at `/api/docs`
-
-## 🔮 Future Enhancements
-
-- **Real-time Monitoring**: WebSocket connections for live updates
-- **Advanced Analytics**: Machine learning model performance tracking
-- **Email Integration**: Direct email processing and routing
-- **Mobile App**: React Native mobile application
-- **Multi-language Support**: Internationalization
-- **Advanced Security**: OAuth2, RBAC, audit logging
-- **Model Versioning**: A/B testing and model comparison
-- **Automated Retraining**: Continuous learning pipeline
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
-**Built with ❤️ for the European Union Cybersecurity Emergency Response Team**
+**Built with ❤️ for CERT-EU cybersecurity operations**
