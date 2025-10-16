@@ -35,13 +35,13 @@ const Dashboard = () => {
   useEffect(() => {
     fetchDashboardData();
     
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(() => {
-      console.log('Dashboard: Auto-refreshing data...');
-      fetchDashboardData();
-    }, 30000);
+    // Auto-refresh disabled - use manual refresh or event-based refresh only
+    // const interval = setInterval(() => {
+    //   console.log('Dashboard: Auto-refreshing data...');
+    //   fetchDashboardData();
+    // }, 30000);
     
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, []);
 
   const fetchDashboardData = async () => {
