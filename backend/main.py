@@ -222,7 +222,7 @@ def load_model():
                 num_numerical_features=17,  # Standard feature count
                 use_gpu=False  # Set to True if GPU available
             )
-            
+        
             # Verify model was created
             if model is None:
                 raise RuntimeError("HybridTransformerModel constructor returned None!")
@@ -1182,7 +1182,7 @@ async def predict_batch_file(
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
-    """Predict queue for multiple tickets from JSONL file with proper batch processing"""
+    """Predict queue for multiple tickets from JSONL file with chunked batch processing"""
     
     # Check if model is available, otherwise use demo mode
     if not model or not processor:
@@ -1195,149 +1195,181 @@ async def predict_batch_file(
         lines = content.decode('utf-8').strip().split('\n')
         tickets_data = [json.loads(line) for line in lines if line.strip()]
         
-        print(f"🔄 Processing {len(tickets_data)} tickets in batch...")
+        print(f"🔄 Processing {len(tickets_data)} tickets with chunked batch processing...")
         
-        # Create DataFrame for batch processing
-        import pandas as pd
-        df = pd.DataFrame(tickets_data)
+        # Chunking configuration
+        CHUNK_SIZE = 100  # Process 100 tickets at a time for faster processing
+        total_tickets = len(tickets_data)
+        total_chunks = (total_tickets + CHUNK_SIZE - 1) // CHUNK_SIZE
         
-        # Ensure required columns exist
-        if 'created_date' not in df.columns:
-            df['created_date'] = datetime.now().isoformat()
+        print(f"📊 Split into {total_chunks} chunks of {CHUNK_SIZE} tickets each")
         
-        print(f"📊 Created DataFrame with {len(df)} tickets")
+        # Initialize results tracking
+        all_results = []
+        total_saved = 0
+        total_duplicates_skipped = 0
         
-        # Extract features for entire batch at once
-        print("🔍 Extracting features for entire batch...")
-        features = processor.extract_features(df)
+        # Process tickets in chunks
+        for chunk_idx in range(total_chunks):
+            start_idx = chunk_idx * CHUNK_SIZE
+            end_idx = min(start_idx + CHUNK_SIZE, total_tickets)
+            chunk_tickets = tickets_data[start_idx:end_idx]
+            
+            print(f"🔄 Processing chunk {chunk_idx + 1}/{total_chunks} ({len(chunk_tickets)} tickets)...")
+            
+            # Create DataFrame for this chunk
+            import pandas as pd
+            df = pd.DataFrame(chunk_tickets)
+            
+            # Ensure required columns exist
+            if 'created_date' not in df.columns:
+                df['created_date'] = datetime.now().isoformat()
+            
+            # Extract features for this chunk
+            print(f"🔍 Extracting features for chunk {chunk_idx + 1}...")
+            features = processor.extract_features(df)
+            
+            # Prepare features for batch prediction
+            text_features, numerical_features, _ = processor.prepare_features(features, is_training=False)
+            
+            print(f"✅ Features prepared for chunk {chunk_idx + 1}: {len(text_features)} text, {len(numerical_features)} numerical")
+            
+            # Run batch prediction for this chunk
+            print(f"🚀 Running ML prediction for chunk {chunk_idx + 1}...")
+            predictions = model.predict(text_features, numerical_features, batch_size=64)
+            probabilities = model.predict_proba(text_features, numerical_features, batch_size=64)
+            
+            print(f"✅ Chunk {chunk_idx + 1} prediction completed: {len(predictions)} results")
         
-        # Prepare features for batch prediction
-        text_features, numerical_features, _ = processor.prepare_features(features, is_training=False)
-        
-        print(f"✅ Features prepared: {len(text_features)} text, {len(numerical_features)} numerical")
-        
-        # Run batch prediction (this is the key improvement!)
-        print("🚀 Running batch ML prediction...")
-        # Use larger batch size for better performance
-        predictions = model.predict(text_features, numerical_features, batch_size=64)
-        probabilities = model.predict_proba(text_features, numerical_features, batch_size=64)
-        
-        print(f"✅ Batch prediction completed: {len(predictions)} results")
-        
-        
-        # Get existing ticket IDs in one query for efficiency
-        ticket_ids_to_check = [t.get('ticket_id', f"batch_{uuid.uuid4()}") for t in tickets_data]
-        existing_tickets = db.query(Ticket.ticket_id).filter(
-            Ticket.ticket_id.in_(ticket_ids_to_check)
-        ).all()
-        existing_ticket_ids = {t[0] for t in existing_tickets}  # Extract from tuples
-        
-        print(f"ℹ️  Found {len(existing_ticket_ids)} existing tickets")
-        
-        # Process results and save to database
-        results = []
-        saved_count = 0
-        duplicate_count = 0
-        
-        for i, (ticket_data, prediction, proba) in enumerate(zip(tickets_data, predictions, probabilities)):
-            try:
-                ticket_id = ticket_data.get('ticket_id', f"batch_{uuid.uuid4()}")
-                
-                # Skip duplicates
-                if ticket_id in existing_ticket_ids:
-                    duplicate_count += 1
-                    print(f"⚠️  Skipping duplicate: {ticket_id}")
-                    continue
-                
-                # Get prediction details
-                predicted_queue = class_names[prediction]
-                confidence_score = float(proba[prediction])
-                
-                # Create probability dictionary
-                all_probabilities = {
-                    class_names[j]: float(proba[j]) 
-                    for j in range(len(class_names))
-                }
-                
-                # Determine routing decision
-                if confidence_score >= 0.85:
-                    routing_decision = "auto_route"
-                elif confidence_score >= 0.65:
-                    routing_decision = "human_verify"
-                else:
-                    routing_decision = "manual_triage"
-                
-                # Parse created_date
-                created_date = None
-                if ticket_data.get('created_date'):
-                    try:
-                        created_date = datetime.fromisoformat(
-                            ticket_data['created_date'].replace('Z', '+00:00')
-                        )
-                    except:
-                        created_date = None
-                
-                # Create ticket
-                db_ticket = Ticket(
-                    ticket_id=ticket_id,
-                    title=ticket_data.get('title', ''),
-                    content=ticket_data.get('content', ''),
-                    created_date=created_date,
-                    email_address=ticket_data.get('email_address', 'unknown@example.com'),
-                    raw_data=ticket_data
-                )
-                
-                db.add(db_ticket)
-                db.flush()  # Get the database ID
-                
-                # Now create prediction with the ticket's database ID
-                db_prediction = Prediction(
-                    ticket_id=db_ticket.id,  # Now this has a value!
-                    predicted_queue=predicted_queue,
-                    confidence_score=confidence_score,
-                    all_probabilities=all_probabilities,
-                    model_version="hybrid_roberta_v1",
-                    processing_time_ms=0,
-                    routing_decision=routing_decision,
-                    features_used={
-                        'batch_processing': True,
-                        'batch_index': i
+            
+            # Get existing ticket IDs for this chunk
+            chunk_ticket_ids = [t.get('ticket_id', f"batch_{uuid.uuid4()}") for t in chunk_tickets]
+            existing_tickets = db.query(Ticket.ticket_id).filter(
+                Ticket.ticket_id.in_(chunk_ticket_ids)
+            ).all()
+            existing_ticket_ids = {t[0] for t in existing_tickets}
+            
+            print(f"ℹ️  Chunk {chunk_idx + 1}: Found {len(existing_ticket_ids)} existing tickets")
+            
+            # Process results for this chunk
+            chunk_results = []
+            chunk_saved = 0
+            chunk_duplicates = 0
+            
+            for i, (ticket_data, prediction, proba) in enumerate(zip(chunk_tickets, predictions, probabilities)):
+                try:
+                    ticket_id = ticket_data.get('ticket_id', f"batch_{uuid.uuid4()}")
+                    
+                    # Skip duplicates
+                    if ticket_id in existing_ticket_ids:
+                        chunk_duplicates += 1
+                        print(f"⚠️  Skipping duplicate: {ticket_id}")
+                        continue
+                    
+                    # Get prediction details
+                    predicted_queue = class_names[prediction]
+                    confidence_score = float(proba[prediction])
+                    
+                    # Create probability dictionary
+                    all_probabilities = {
+                        class_names[j]: float(proba[j]) 
+                        for j in range(len(class_names))
                     }
-                )
-                
-                db.add(db_prediction)
-                saved_count += 1
-                
-                # Add to results
-                results.append({
-                    "ticket_id": ticket_id,
-                    "predicted_queue": predicted_queue,
-                    "confidence_score": confidence_score,
-                    "all_probabilities": all_probabilities,
-                    "routing_decision": routing_decision,
-                    "processing_time_ms": 0,
-                    "prediction_id": f"batch_{i}"
-                })
-                
-            except Exception as e:
-                print(f"❌ Error processing ticket {i}: {e}")
-                import traceback
-                traceback.print_exc()
-                continue
+                    
+                    # Determine routing decision
+                    if confidence_score >= 0.85:
+                        routing_decision = "auto_route"
+                    elif confidence_score >= 0.65:
+                        routing_decision = "human_verify"
+                    else:
+                        routing_decision = "manual_triage"
+                    
+                    # Parse created_date
+                    created_date = None
+                    if ticket_data.get('created_date'):
+                        try:
+                            created_date = datetime.fromisoformat(
+                                ticket_data['created_date'].replace('Z', '+00:00')
+                            )
+                        except:
+                            created_date = None
+                    
+                    # Create ticket
+                    db_ticket = Ticket(
+                        ticket_id=ticket_id,
+                        title=ticket_data.get('title', ''),
+                        content=ticket_data.get('content', ''),
+                        created_date=created_date,
+                        email_address=ticket_data.get('email_address', 'unknown@example.com'),
+                        raw_data=ticket_data
+                    )
+                    
+                    db.add(db_ticket)
+                    db.flush()  # Get the database ID
+                    
+                    # Create prediction
+                    global_ticket_index = start_idx + i
+                    db_prediction = Prediction(
+                        ticket_id=db_ticket.id,
+                        predicted_queue=predicted_queue,
+                        confidence_score=confidence_score,
+                        all_probabilities=all_probabilities,
+                        model_version="hybrid_roberta_v1",
+                        processing_time_ms=0,
+                        routing_decision=routing_decision,
+                        features_used={
+                            'chunked_batch_processing': True,
+                            'chunk_index': chunk_idx,
+                            'ticket_index_in_chunk': i,
+                            'global_ticket_index': global_ticket_index
+                        }
+                    )
+                    
+                    db.add(db_prediction)
+                    chunk_saved += 1
+                    
+                    # Add to chunk results
+                    chunk_results.append({
+                        "ticket_id": ticket_id,
+                        "predicted_queue": predicted_queue,
+                        "confidence_score": confidence_score,
+                        "all_probabilities": all_probabilities,
+                        "routing_decision": routing_decision,
+                        "processing_time_ms": 0,
+                        "prediction_id": f"chunk_{chunk_idx}_ticket_{i}"
+                    })
+                    
+                except Exception as e:
+                    print(f"❌ Error processing ticket {i} in chunk {chunk_idx + 1}: {e}")
+                    import traceback
+                    traceback.print_exc()
+                    continue
+            
+            # Commit changes for this chunk
+            db.commit()
+            
+            # Update totals
+            all_results.extend(chunk_results)
+            total_saved += chunk_saved
+            total_duplicates_skipped += chunk_duplicates
+            
+            print(f"✅ Chunk {chunk_idx + 1} completed: {chunk_saved} saved, {chunk_duplicates} duplicates skipped")
         
-        # Commit all changes at once
-        db.commit()
+        print(f"🎉 All chunks processed successfully!")
         
-        print(f"✅ Batch processing completed:")
-        print(f"   - Processed: {len(tickets_data)} tickets")
-        print(f"   - Saved: {saved_count} new tickets")
-        print(f"   - Skipped duplicates: {duplicate_count}")
+        print(f"✅ Chunked batch processing completed:")
+        print(f"   - Total processed: {len(tickets_data)} tickets")
+        print(f"   - Total saved: {total_saved} new tickets")
+        print(f"   - Total duplicates skipped: {total_duplicates_skipped}")
+        print(f"   - Processed in {total_chunks} chunks of {CHUNK_SIZE} tickets each")
         
         return {
             "total_processed": len(tickets_data),
-            "saved": saved_count,
-            "duplicates_skipped": duplicate_count,
-            "results": results
+            "saved": total_saved,
+            "duplicates_skipped": total_duplicates_skipped,
+            "chunks_processed": total_chunks,
+            "chunk_size": CHUNK_SIZE,
+            "results": all_results
         }
         
     except Exception as e:

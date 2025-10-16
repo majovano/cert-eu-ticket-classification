@@ -169,22 +169,23 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div id="dashboard-container" className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-1">CERT-EU Ticket Classification Overview</p>
+      <div id="dashboard-header" className="flex items-center justify-between">
+        <div id="dashboard-title-section">
+          <h1 id="dashboard-title" className="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <p id="dashboard-subtitle" className="text-gray-600 mt-1">CERT-EU Ticket Classification Overview</p>
         </div>
-        <div className="flex items-center space-x-4">
+        <div id="dashboard-controls" className="flex items-center space-x-4">
           <button
+            id="dashboard-refresh-button"
             onClick={fetchDashboardData}
             disabled={loading}
             className="px-4 py-2 bg-eu-blue-600 text-white rounded-lg hover:bg-eu-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
           >
             {loading ? (
               <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                <div id="dashboard-refresh-spinner" className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                 Refreshing...
               </>
             ) : (
@@ -196,18 +197,18 @@ const Dashboard = () => {
               </>
             )}
           </button>
-          <div className="text-sm text-gray-500">
+          <div id="dashboard-last-updated" className="text-sm text-gray-500">
             Last updated: {lastUpdated ? lastUpdated.toLocaleString() : 'Never'}
           </div>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div id="dashboard-stats-cards" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <div key={index} className="eu-card p-6 fade-in">
+            <div key={index} id={`dashboard-stat-card-${stat.title.toLowerCase().replace(/\s+/g, '-')}`} className="eu-card p-6 fade-in">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">{stat.title}</p>
