@@ -32,7 +32,36 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Add the code directory to Python path to import our ML modules
-sys.path.append("/app/code")
+import os
+
+# Get absolute paths for reliable imports
+backend_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(backend_dir)
+code_dir = os.path.join(project_root, "code")
+
+print(f"🔍 Debug - Backend dir: {backend_dir}")
+print(f"🔍 Debug - Project root: {project_root}")
+print(f"🔍 Debug - Code dir: {code_dir}")
+print(f"🔍 Debug - Code dir exists: {os.path.exists(code_dir)}")
+
+# Try different paths for local vs Docker environments
+possible_code_paths = [
+    code_dir,           # Local development (calculated from absolute path)
+    "/app/code",        # Docker production
+]
+
+code_path_added = False
+for code_path in possible_code_paths:
+    if os.path.exists(code_path):
+        abs_code_path = os.path.abspath(code_path)
+        sys.path.insert(0, abs_code_path)  # Insert at beginning for priority
+        print(f"✅ Added code path: {abs_code_path}")
+        code_path_added = True
+        break
+
+if not code_path_added:
+    print("❌ Warning: Could not find code directory")
+    print(f"   Searched paths: {possible_code_paths}")
 
 from database import (
     get_db, create_tables, Ticket, Prediction, Feedback, User, 
@@ -104,48 +133,114 @@ def load_model():
     global model, processor, class_names
     
     if not ML_AVAILABLE:
-        print("ML modules not available - running in demo mode")
-        # Set up demo data
+        print("⚠️  ML modules not available - running in demo mode")
         class_names = ['CTI', 'DFIR::incidents', 'DFIR::phishing', 'OFFSEC::CVD', 'OFFSEC::Pentesting', 'SMS', 'Trash']
         model = None
         processor = None
         return
     
     try:
-        # Load from the models directory
-        model_path = Path("/app/code/models")
-        processor_path = model_path / "data_processor.pkl"
-        class_names_path = model_path / "class_names.txt"
+        print("=" * 60)
+        print("🚀 Loading ML model components...")
+        print("=" * 60)
         
-        if not processor_path.exists() or not class_names_path.exists():
-            raise FileNotFoundError("Model files not found. Please train the model first.")
+        # Base model directory - use absolute paths
+        backend_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(backend_dir)
+        local_model_dir = os.path.join(project_root, "code", "models")
         
-        # Load processor
+        print(f"🔍 Backend directory: {backend_dir}")
+        print(f"🔍 Project root: {project_root}")
+        print(f"🔍 Looking for models in: {local_model_dir}")
+        print(f"🔍 Models directory exists: {os.path.exists(local_model_dir)}")
+        
+        # Try different paths for local vs Docker
+        possible_model_dirs = [
+            Path(local_model_dir),      # Local development
+            Path("/app/code/models"),   # Docker production
+        ]
+        
+        model_dir = None
+        for path in possible_model_dirs:
+            if path.exists():
+                model_dir = path
+                print(f"✅ Found models directory at: {model_dir}")
+                break
+        
+        if not model_dir:
+            raise FileNotFoundError(f"Models directory not found. Searched: {[str(p) for p in possible_model_dirs]}")
+        
+        # Load data processor
+        processor_path = model_dir / "data_processor.pkl"
+        print(f"🔍 Looking for processor at: {processor_path}")
+        if not processor_path.exists():
+            raise FileNotFoundError(f"Data processor not found: {processor_path}")
+        
         processor = DataProcessor()
         processor.load_processor(str(processor_path))
+        print("✅ Data processor loaded successfully")
         
         # Load class names
+        class_names_path = model_dir / "class_names.txt"
+        print(f"🔍 Looking for class names at: {class_names_path}")
+        if not class_names_path.exists():
+            raise FileNotFoundError(f"Class names file not found: {class_names_path}")
+        
         with open(class_names_path, 'r') as f:
             class_names = [line.strip() for line in f.readlines()]
+        print(f"✅ Loaded {len(class_names)} classes: {class_names}")
         
-        # Load model
+        # Find model directory (try both naming conventions)
+        model_path = None
+        for model_name in ['hybrid_roberta_model', 'basic_model']:
+            potential_path = model_dir / model_name
+            print(f"🔍 Checking for model at: {potential_path}")
+            if potential_path.exists():
+                model_path = potential_path
+                print(f"✅ Found model directory: {model_path}")
+                break
+        
+        if model_path is None:
+            raise FileNotFoundError(f"Model not found. Tried: hybrid_roberta_model, basic_model in {model_dir}")
+        
+        # Initialize model with correct parameters
+        print(f"🔄 Initializing HybridTransformerModel with {len(class_names)} classes...")
         model = HybridTransformerModel(
             num_labels=len(class_names),
-            num_numerical_features=17,  # Standard feature count from your code
+            num_numerical_features=17,  # Standard feature count
             use_gpu=False  # Set to True if GPU available
         )
         
-        # Try to find model directory
-        model_dir = model_path / "hybrid_roberta_model"
-        if model_dir.exists():
-            model.load_model(str(model_dir))
-            print(f"Model loaded successfully from {model_dir}")
-        else:
-            raise FileNotFoundError("Model directory not found")
+        # Load the trained weights
+        print(f"🔄 Loading model weights from: {model_path}")
+        
+        # Load the checkpoint manually to ensure proper loading
+        import torch
+        checkpoint = torch.load(f"{model_path}/model.pt", map_location='cpu', weights_only=False)
+        
+        # Load the model using the proper method
+        model.load_model(str(model_path))
+        
+        # Verify the model is loaded correctly
+        print(f"✅ Model loaded successfully!")
+        print(f"✅ Model device: {model.device}")
+        print(f"✅ Model class: {type(model.model)}")
+        print(f"✅ Model state: {'loaded' if model.model is not None else 'not loaded'}")
+        
+        print("=" * 60)
+        print("🎉 ALL COMPONENTS LOADED SUCCESSFULLY!")
+        print("=" * 60)
             
     except Exception as e:
-        print(f"Error loading model: {e}")
-        # Set up demo mode
+        print("=" * 60)
+        print(f"❌ ERROR LOADING MODEL: {e}")
+        print("=" * 60)
+        import traceback
+        traceback.print_exc()
+        print("=" * 60)
+        print("⚠️  Falling back to DEMO MODE (keyword-based classification)")
+        print("=" * 60)
+        # Fall back to demo mode
         class_names = ['CTI', 'DFIR::incidents', 'DFIR::phishing', 'OFFSEC::CVD', 'OFFSEC::Pentesting', 'SMS', 'Trash']
         model = None
         processor = None
@@ -390,7 +485,7 @@ async def predict_ticket_demo(ticket_data: TicketCreate, db: Session):
     db.commit()
     
     return PredictionResponse(
-        id=db_prediction.id,
+        id=str(db_prediction.id),
         ticket_id=db_ticket.ticket_id,
         predicted_queue=predicted_queue,
         confidence_score=confidence,

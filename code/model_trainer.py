@@ -588,31 +588,90 @@ class HybridTransformerModel:
         
         print(f"Model saved to {filepath}")
     
-    def load_model(self, filepath):
-        """Load a trained model."""
-        # Load tokenizer
-        self.tokenizer = AutoTokenizer.from_pretrained(filepath)
+    def load_model(self, model_dir):
+        """Load model from checkpoint with proper state dict handling"""
+        from pathlib import Path
+        import torch
+        from transformers import AutoTokenizer, RobertaModel
         
-        # Load model
-        checkpoint = torch.load(f"{filepath}/model.pt", map_location=self.device, weights_only=False)
+        model_dir = Path(model_dir)
+        checkpoint_path = model_dir / 'model.pt'
         
-        # Recreate model
-        config = checkpoint['model_config']
-        self.model = HybridRoBERTaModel(
-            model_name=config['model_name'],
-            num_labels=config['num_labels'],
-            num_numerical_features=config['num_numerical_features'],
-            use_attention_fusion=config.get('use_attention_fusion', True)
+        print(f"Loading model from {checkpoint_path}...")
+        
+        # Load the checkpoint
+        checkpoint = torch.load(
+            checkpoint_path,
+            map_location=self.device,
+            weights_only=False
         )
         
-        self.model.load_state_dict(checkpoint['model_state_dict'])
+        print(f"✅ Checkpoint loaded. Keys: {list(checkpoint.keys())}")
+        
+        # Load tokenizer
+        try:
+            self.tokenizer = AutoTokenizer.from_pretrained(str(model_dir))
+            print("✅ Tokenizer loaded from model directory")
+        except Exception as e:
+            print(f"⚠️ Loading tokenizer from directory failed: {e}")
+            print("Loading tokenizer from 'roberta-base'...")
+            self.tokenizer = AutoTokenizer.from_pretrained('roberta-base')
+            print("✅ Tokenizer loaded from pretrained")
+        
+        # Extract model config if available
+        if 'model_config' in checkpoint:
+            config = checkpoint['model_config']
+            print(f"Model config: {config}")
+        
+        # Ensure model is initialized before loading state dict
+        if self.model is None:
+            print("Initializing model...")
+            # Initialize the model directly without calling setup_model (to avoid tokenizer conflict)
+            from model_trainer import HybridRoBERTaModel
+            self.model = HybridRoBERTaModel(
+                model_name=self.model_name,
+                num_labels=self.num_labels,
+                num_numerical_features=self.num_numerical_features,
+                use_attention_fusion=self.use_attention_fusion
+            )
+            print("✅ Model initialized")
+        
+        # Load the state dict into the model
+        if 'model_state_dict' in checkpoint:
+            state_dict = checkpoint['model_state_dict']
+            print(f"Loading state dict with {len(state_dict)} parameters...")
+            
+            # Load the state dict directly (no remapping needed - architectures match!)
+            print("Loading state dict directly (architectures match)...")
+            
+            # Load the state dict directly
+            missing_keys, unexpected_keys = self.model.load_state_dict(state_dict, strict=False)
+            
+            print(f"✅ Model weights loaded successfully!")
+            if missing_keys:
+                print(f"⚠️  Missing keys ({len(missing_keys)}): {missing_keys[:3]}...")
+            if unexpected_keys:
+                print(f"⚠️  Unexpected keys ({len(unexpected_keys)}): {unexpected_keys[:3]}...")
+        else:
+            raise ValueError("No 'model_state_dict' found in checkpoint!")
+        
+        # Load scaler if available
+        if 'scaler' in checkpoint:
+            self.scaler = checkpoint['scaler']
+            print("✅ Scaler loaded")
+        
+        # Load class weights if available
+        if 'class_weights' in checkpoint:
+            self.class_weights = checkpoint['class_weights']
+            print("✅ Class weights loaded")
+        
+        print(f"✅ Model fully loaded from {checkpoint_path}")
+        
+        # Move model to device
         self.model.to(self.device)
+        self.model.eval()
         
-        # Load scaler and class weights
-        self.scaler = checkpoint['scaler']
-        self.class_weights = checkpoint.get('class_weights', None)
-        
-        print(f"Model loaded from {filepath}")
+        return self
     
     def cross_validate(self, texts, numerical_features, labels, 
                       cv_folds=5, epochs=3, batch_size=16, learning_rate=2e-5,

@@ -34,7 +34,7 @@ services:
     volumes:
       - ./backend:/app
       - ./code:/app/code:ro
-      - ./test_predictions.jsonl:/app/test_predictions.jsonl:ro
+      - ./backend/test_predictions.jsonl:/app/test_predictions.jsonl:ro
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   # React Frontend

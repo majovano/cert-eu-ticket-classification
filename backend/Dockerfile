@@ -15,6 +15,13 @@ COPY backend/requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Download NLTK data
+RUN python3 -c "import nltk; import ssl; \
+    ssl._create_default_https_context = ssl._create_unverified_context; \
+    nltk.download('punkt'); nltk.download('stopwords'); \
+    nltk.download('wordnet'); nltk.download('omw-1.4'); \
+    nltk.download('punkt_tab')"
+
 # Copy backend application code
 COPY backend/ .
 
