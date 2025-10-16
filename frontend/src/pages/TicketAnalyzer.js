@@ -65,16 +65,41 @@ const TicketAnalyzer = () => {
 
     setLoading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
+      // Read the file content
+      const fileContent = await file.text();
       
-      const response = await axios.post('/api/predict/batch', formData, {
+      // Parse JSONL (each line is a JSON object)
+      const lines = fileContent.trim().split('\n');
+      const tickets = [];
+      
+      for (const line of lines) {
+        if (line.trim()) {
+          try {
+            const ticket = JSON.parse(line);
+            tickets.push(ticket);
+          } catch (parseError) {
+            console.error('Error parsing JSON line:', line, parseError);
+            toast.error(`Error parsing line: ${line.substring(0, 50)}...`);
+            return;
+          }
+        }
+      }
+      
+      if (tickets.length === 0) {
+        toast.error('No valid tickets found in file');
+        return;
+      }
+      
+      // Send as JSON data to the new batch endpoint
+      const response = await axios.post('/api/predict/batch', {
+        tickets: tickets
+      }, {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'application/json'
         }
       });
       
-      const message = response.data.message || `Successfully processed ${response.data.results?.length || 0} tickets`;
+      const message = `Successfully processed ${response.data.total_processed || 0} tickets (${response.data.saved || 0} saved, ${response.data.duplicates_skipped || 0} duplicates skipped)`;
       toast.success(`Batch analysis completed: ${message}`);
       setPrediction(null); // Clear single prediction
     } catch (error) {

@@ -589,7 +589,7 @@ class HybridTransformerModel:
         print(f"Model saved to {filepath}")
     
     def load_model(self, model_dir):
-        """Load model from checkpoint with proper state dict handling"""
+        """Load model from checkpoint with enhanced error handling and validation"""
         from pathlib import Path
         import torch
         from transformers import AutoTokenizer, RobertaModel
@@ -597,26 +597,37 @@ class HybridTransformerModel:
         model_dir = Path(model_dir)
         checkpoint_path = model_dir / 'model.pt'
         
-        print(f"Loading model from {checkpoint_path}...")
+        print(f"🔄 Loading model from {checkpoint_path}...")
         
-        # Load the checkpoint
-        checkpoint = torch.load(
-            checkpoint_path,
-            map_location=self.device,
-            weights_only=False
-        )
+        # Verify checkpoint exists
+        if not checkpoint_path.exists():
+            raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
         
-        print(f"✅ Checkpoint loaded. Keys: {list(checkpoint.keys())}")
+        # Load the checkpoint with error handling
+        try:
+            checkpoint = torch.load(
+                checkpoint_path,
+                map_location=self.device,
+                weights_only=False
+            )
+            print(f"✅ Checkpoint loaded. Keys: {list(checkpoint.keys())}")
+        except Exception as e:
+            print(f"❌ Failed to load checkpoint: {e}")
+            raise RuntimeError(f"Checkpoint loading failed: {e}")
         
-        # Load tokenizer
+        # Load tokenizer with better error handling
         try:
             self.tokenizer = AutoTokenizer.from_pretrained(str(model_dir))
             print("✅ Tokenizer loaded from model directory")
         except Exception as e:
             print(f"⚠️ Loading tokenizer from directory failed: {e}")
-            print("Loading tokenizer from 'roberta-base'...")
-            self.tokenizer = AutoTokenizer.from_pretrained('roberta-base')
-            print("✅ Tokenizer loaded from pretrained")
+            try:
+                print("Loading tokenizer from 'roberta-base'...")
+                self.tokenizer = AutoTokenizer.from_pretrained('roberta-base')
+                print("✅ Tokenizer loaded from pretrained")
+            except Exception as e2:
+                print(f"❌ Failed to load tokenizer: {e2}")
+                raise RuntimeError(f"Tokenizer loading failed: {e2}")
         
         # Extract model config if available
         if 'model_config' in checkpoint:
@@ -625,51 +636,117 @@ class HybridTransformerModel:
         
         # Ensure model is initialized before loading state dict
         if self.model is None:
-            print("Initializing model...")
-            # Initialize the model directly without calling setup_model (to avoid tokenizer conflict)
-            from model_trainer import HybridRoBERTaModel
-            self.model = HybridRoBERTaModel(
-                model_name=self.model_name,
-                num_labels=self.num_labels,
-                num_numerical_features=self.num_numerical_features,
-                use_attention_fusion=self.use_attention_fusion
-            )
-            print("✅ Model initialized")
+            print("🔄 Initializing model...")
+            try:
+                # Initialize the model directly without calling setup_model (to avoid tokenizer conflict)
+                from model_trainer import HybridRoBERTaModel
+                self.model = HybridRoBERTaModel(
+                    model_name=self.model_name,
+                    num_labels=self.num_labels,
+                    num_numerical_features=self.num_numerical_features,
+                    use_attention_fusion=self.use_attention_fusion
+                )
+                
+                # Verify model was created successfully
+                if self.model is None:
+                    raise RuntimeError("HybridRoBERTaModel constructor returned None!")
+                
+                print(f"✅ Model initialized: {type(self.model)}")
+                
+            except Exception as e:
+                print(f"❌ Failed to initialize model: {e}")
+                import traceback
+                traceback.print_exc()
+                raise RuntimeError(f"Model initialization failed: {e}")
         
         # Load the state dict into the model
         if 'model_state_dict' in checkpoint:
             state_dict = checkpoint['model_state_dict']
-            print(f"Loading state dict with {len(state_dict)} parameters...")
+            print(f"🔄 Loading state dict with {len(state_dict)} parameters...")
             
-            # Load the state dict directly (no remapping needed - architectures match!)
-            print("Loading state dict directly (architectures match)...")
-            
-            # Load the state dict directly
-            missing_keys, unexpected_keys = self.model.load_state_dict(state_dict, strict=False)
-            
-            print(f"✅ Model weights loaded successfully!")
-            if missing_keys:
-                print(f"⚠️  Missing keys ({len(missing_keys)}): {missing_keys[:3]}...")
-            if unexpected_keys:
-                print(f"⚠️  Unexpected keys ({len(unexpected_keys)}): {unexpected_keys[:3]}...")
+            try:
+                # Check if we need key remapping for classifier layers
+                classifier_keys_in_checkpoint = [k for k in state_dict.keys() if 'classifier' in k]
+                print(f"Classifier keys in checkpoint: {classifier_keys_in_checkpoint}")
+                
+                # Check current model's classifier keys
+                current_model_keys = [k for k in self.model.state_dict().keys() if 'classifier' in k]
+                print(f"Current model classifier keys: {current_model_keys}")
+                
+                # Remap keys if needed (Sequential -> Named layers)
+                if 'classifier.0.weight' in state_dict and 'classifier.dense.weight' in current_model_keys:
+                    print("🔄 Remapping classifier keys from Sequential to Named layers...")
+                    key_mapping = {
+                        'classifier.0.weight': 'classifier.dense.weight',
+                        'classifier.0.bias': 'classifier.dense.bias',
+                        'classifier.3.weight': 'classifier.out_proj.weight',
+                        'classifier.3.bias': 'classifier.out_proj.bias',
+                    }
+                    
+                    # Create new state dict with remapped keys
+                    new_state_dict = {}
+                    remapped_count = 0
+                    for key, value in state_dict.items():
+                        if key in key_mapping:
+                            new_key = key_mapping[key]
+                            print(f"  ✓ Remapping: {key} -> {new_key}")
+                            new_state_dict[new_key] = value
+                            remapped_count += 1
+                        else:
+                            new_state_dict[key] = value
+                    
+                    print(f"Remapped {remapped_count} classifier keys")
+                    state_dict = new_state_dict
+                else:
+                    print("Loading state dict directly (architectures match)...")
+                
+                # Load the state dict
+                missing_keys, unexpected_keys = self.model.load_state_dict(state_dict, strict=False)
+                
+                print(f"✅ Model weights loaded successfully!")
+                if missing_keys:
+                    print(f"⚠️  Missing keys ({len(missing_keys)}): {missing_keys[:3]}...")
+                if unexpected_keys:
+                    print(f"⚠️  Unexpected keys ({len(unexpected_keys)}): {unexpected_keys[:3]}...")
+                    
+            except Exception as e:
+                print(f"❌ Failed to load state dict: {e}")
+                import traceback
+                traceback.print_exc()
+                raise RuntimeError(f"State dict loading failed: {e}")
         else:
             raise ValueError("No 'model_state_dict' found in checkpoint!")
         
         # Load scaler if available
         if 'scaler' in checkpoint:
-            self.scaler = checkpoint['scaler']
-            print("✅ Scaler loaded")
+            try:
+                self.scaler = checkpoint['scaler']
+                print("✅ Scaler loaded")
+            except Exception as e:
+                print(f"⚠️  Failed to load scaler: {e}")
         
         # Load class weights if available
         if 'class_weights' in checkpoint:
-            self.class_weights = checkpoint['class_weights']
-            print("✅ Class weights loaded")
+            try:
+                self.class_weights = checkpoint['class_weights']
+                print("✅ Class weights loaded")
+            except Exception as e:
+                print(f"⚠️  Failed to load class weights: {e}")
         
         print(f"✅ Model fully loaded from {checkpoint_path}")
         
-        # Move model to device
-        self.model.to(self.device)
-        self.model.eval()
+        # Move model to device with enhanced error handling
+        try:
+            if self.model is not None:
+                self.model.to(self.device)
+                self.model.eval()
+                print(f"✅ Model moved to device: {self.device}")
+            else:
+                print("❌ ERROR: Model is None, cannot move to device!")
+                raise ValueError("Model is None after loading!")
+        except Exception as e:
+            print(f"❌ Failed to move model to device: {e}")
+            raise RuntimeError(f"Device transfer failed: {e}")
         
         return self
     

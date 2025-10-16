@@ -30,28 +30,80 @@ const Dashboard = () => {
   const [dashboardStats, setDashboardStats] = useState(null);
   const [queuePerformance, setQueuePerformance] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState(null);
 
   useEffect(() => {
     fetchDashboardData();
+    
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(() => {
+      console.log('Dashboard: Auto-refreshing data...');
+      fetchDashboardData();
+    }, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const fetchDashboardData = async () => {
     try {
+      console.log('Dashboard: Starting to fetch data...');
       setLoading(true);
+      
+      const timestamp = Date.now();
       const [statsResponse, queueResponse] = await Promise.all([
-        axios.get('/api/dashboard/stats'),
-        axios.get('/api/dashboard/queue-performance')
+        axios.get(`/api/dashboard/stats?t=${timestamp}`),
+        axios.get(`/api/dashboard/queue-performance?t=${timestamp}`)
       ]);
+      
+      console.log('Dashboard: API responses received', {
+        statsData: statsResponse.data,
+        queueData: queueResponse.data
+      });
       
       setDashboardStats(statsResponse.data);
       setQueuePerformance(queueResponse.data);
+      setLastUpdated(new Date());
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      console.error('Dashboard: Error fetching data:', error);
+      console.error('Dashboard: Error details:', error.response?.data || error.message);
       toast.error('Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
   };
+
+  // Listen for refresh events from other components
+  useEffect(() => {
+    const handleRefresh = () => {
+      console.log('Dashboard: Refresh event received, fetching data...');
+      fetchDashboardData();
+    };
+    
+    const handleStorageChange = (e) => {
+      if (e.key === 'dashboardRefresh') {
+        console.log('Dashboard: Storage refresh event received');
+        fetchDashboardData();
+      }
+    };
+    
+    const handleMessage = (e) => {
+      if (e.data?.type === 'REFRESH_DASHBOARD') {
+        console.log('Dashboard: Message refresh event received');
+        fetchDashboardData();
+      }
+    };
+    
+    // Listen to multiple refresh methods
+    window.addEventListener('refreshDashboard', handleRefresh);
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('message', handleMessage);
+    
+    return () => {
+      window.removeEventListener('refreshDashboard', handleRefresh);
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('message', handleMessage);
+    };
+  }, []);
 
   const statCards = [
     {
@@ -124,8 +176,29 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-600 mt-1">CERT-EU Ticket Classification Overview</p>
         </div>
-        <div className="text-sm text-gray-500">
-          Last updated: {new Date().toLocaleString()}
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={fetchDashboardData}
+            disabled={loading}
+            className="px-4 py-2 bg-eu-blue-600 text-white rounded-lg hover:bg-eu-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+          >
+            {loading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                Refreshing...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Refresh
+              </>
+            )}
+          </button>
+          <div className="text-sm text-gray-500">
+            Last updated: {lastUpdated ? lastUpdated.toLocaleString() : 'Never'}
+          </div>
         </div>
       </div>
 

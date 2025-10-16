@@ -1,0 +1,3 @@
+{"ticket_id":"NEW-BATCH-1","title":"Phishing attack targeting executives","content":"CEO received email requesting wire transfer with malicious link","created_date":"2025-01-16T14:30:00Z","email_address":"security@company.com"}
+{"ticket_id":"NEW-BATCH-2","title":"Vulnerability in production system","content":"CVE-2024-9999 critical vulnerability discovered in Apache server version 2.4.50","created_date":"2025-01-16T15:00:00Z","email_address":"operations@company.com"}
+{"ticket_id":"NEW-BATCH-3","title":"Ransomware incident response","content":"Multiple servers encrypted with ransomware. Need immediate forensic analysis and incident response team","created_date":"2025-01-16T15:30:00Z","email_address":"soc@company.com"}

@@ -16,11 +16,14 @@ import numpy as np
 from pathlib import Path
 import sys
 import logging
+import os
+
+# Disable tqdm progress bars for API calls
+os.environ['TQDM_DISABLE'] = '1'
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
-import os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
@@ -129,7 +132,7 @@ time_series_predictor = TimeSeriesPredictor()
 
 # Initialize ML components
 def load_model():
-    """Load the trained model and processor"""
+    """Load the trained model and processor with enhanced error checking"""
     global model, processor, class_names
     
     if not ML_AVAILABLE:
@@ -203,29 +206,64 @@ def load_model():
         if model_path is None:
             raise FileNotFoundError(f"Model not found. Tried: hybrid_roberta_model, basic_model in {model_dir}")
         
+        # Verify model.pt exists
+        model_pt_path = model_path / "model.pt"
+        if not model_pt_path.exists():
+            raise FileNotFoundError(f"model.pt not found at: {model_pt_path}")
+        
+        print(f"✅ Found model checkpoint at: {model_pt_path}")
+        
         # Initialize model with correct parameters
         print(f"🔄 Initializing HybridTransformerModel with {len(class_names)} classes...")
-        model = HybridTransformerModel(
-            num_labels=len(class_names),
-            num_numerical_features=17,  # Standard feature count
-            use_gpu=False  # Set to True if GPU available
-        )
+        
+        try:
+            model = HybridTransformerModel(
+                num_labels=len(class_names),
+                num_numerical_features=17,  # Standard feature count
+                use_gpu=False  # Set to True if GPU available
+            )
+            
+            # Verify model was created
+            if model is None:
+                raise RuntimeError("HybridTransformerModel constructor returned None!")
+            
+            print(f"✅ Model instance created: {type(model)}")
+            
+        except Exception as e:
+            print(f"❌ Failed to create HybridTransformerModel instance!")
+            import traceback
+            traceback.print_exc()
+            raise RuntimeError(f"Model instantiation failed: {e}")
         
         # Load the trained weights
         print(f"🔄 Loading model weights from: {model_path}")
         
-        # Load the checkpoint manually to ensure proper loading
-        import torch
-        checkpoint = torch.load(f"{model_path}/model.pt", map_location='cpu', weights_only=False)
-        
-        # Load the model using the proper method
-        model.load_model(str(model_path))
-        
-        # Verify the model is loaded correctly
-        print(f"✅ Model loaded successfully!")
-        print(f"✅ Model device: {model.device}")
-        print(f"✅ Model class: {type(model.model)}")
-        print(f"✅ Model state: {'loaded' if model.model is not None else 'not loaded'}")
+        try:
+            # Load the model using the proper method
+            model.load_model(str(model_path))
+            
+            # Verify the model is loaded correctly
+            if model.model is None:
+                raise RuntimeError("model.model is None after load_model() call!")
+            
+            print(f"✅ Model loaded successfully!")
+            print(f"✅ Model device: {model.device}")
+            print(f"✅ Model class: {type(model.model)}")
+            print(f"✅ Model state: {'loaded' if model.model is not None else 'NOT LOADED'}")
+            
+            # Test that model can be used
+            print("🧪 Testing model inference capability...")
+            if hasattr(model.model, 'eval'):
+                model.model.eval()
+                print("✅ Model set to eval mode successfully")
+            else:
+                print("⚠️  Model doesn't have eval() method")
+            
+        except Exception as e:
+            print(f"❌ Failed to load model weights!")
+            import traceback
+            traceback.print_exc()
+            raise RuntimeError(f"Model weight loading failed: {e}")
         
         print("=" * 60)
         print("🎉 ALL COMPONENTS LOADED SUCCESSFULLY!")
@@ -296,41 +334,127 @@ async def import_sample_data(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Failed to import sample data: {str(e)}")
 
 # Dashboard endpoints
-@app.get("/api/dashboard/stats", response_model=DashboardStats)
+@app.get("/api/dashboard/stats")
 async def get_dashboard_stats(db: Session = Depends(get_db)):
-    """Get dashboard statistics"""
+    """Get dashboard statistics with real-time data"""
     
-    # Get total tickets
-    total_tickets = db.query(Ticket).count()
+    print("📊 Fetching dashboard stats...")
     
-    # Get total predictions
-    total_predictions = db.query(Prediction).count()
+    # Force refresh the session to get latest data
+    db.expire_all()
     
-    # Get routing decisions
-    auto_routed = db.query(Prediction).filter(Prediction.routing_decision == "auto_route").count()
-    human_verify = db.query(Prediction).filter(Prediction.routing_decision == "human_verify").count()
-    manual_triage = db.query(Prediction).filter(Prediction.routing_decision == "manual_triage").count()
-    
-    # Get average confidence
-    avg_confidence_result = db.query(Prediction).with_entities(
-        func.avg(Prediction.confidence_score)
-    ).scalar()
-    avg_confidence = float(avg_confidence_result) if avg_confidence_result else 0.0
-    
-    # Get feedback stats
-    total_feedback = db.query(Feedback).count()
-    corrections_needed = db.query(Feedback).filter(Feedback.is_correct == False).count()
-    
-    return DashboardStats(
-        total_tickets=total_tickets,
-        total_predictions=total_predictions,
-        auto_routed=auto_routed,
-        human_verify=human_verify,
-        manual_triage=manual_triage,
-        avg_confidence=avg_confidence,
-        total_feedback=total_feedback,
-        corrections_needed=corrections_needed
-    )
+    try:
+        # Total predictions
+        total_predictions = db.query(Prediction).count()
+        print(f"   Total predictions: {total_predictions}")
+        
+        # Routing decision counts with explicit query
+        auto_route = db.query(Prediction).filter(
+            Prediction.routing_decision == "auto_route"
+        ).count()
+        
+        human_verify = db.query(Prediction).filter(
+            Prediction.routing_decision == "human_verify"
+        ).count()
+        
+        manual_triage = db.query(Prediction).filter(
+            Prediction.routing_decision == "manual_triage"
+        ).count()
+        
+        print(f"   Routing decisions:")
+        print(f"     - auto_route: {auto_route}")
+        print(f"     - human_verify: {human_verify}")
+        print(f"     - manual_triage: {manual_triage}")
+        
+        # Verify the counts add up
+        total_by_routing = auto_route + human_verify + manual_triage
+        if total_by_routing != total_predictions:
+            print(f"⚠️  WARNING: Routing counts ({total_by_routing}) don't match total ({total_predictions})")
+            # Check for NULL or other values
+            other_routing = db.query(Prediction).filter(
+                ~Prediction.routing_decision.in_(["auto_route", "human_verify", "manual_triage"])
+            ).count()
+            print(f"     - other/null routing: {other_routing}")
+        
+        # Calculate percentages
+        auto_route_pct = (auto_route / total_predictions * 100) if total_predictions > 0 else 0
+        
+        # Average confidence score
+        avg_confidence = db.query(func.avg(Prediction.confidence_score)).scalar() or 0
+        
+        # Feedback metrics
+        total_feedback = db.query(Feedback).count()
+        correct_feedback = db.query(Feedback).filter(Feedback.is_correct == True).count()
+        
+        accuracy = (correct_feedback / total_feedback * 100) if total_feedback > 0 else 0
+        
+        print(f"   Feedback metrics:")
+        print(f"     - total: {total_feedback}")
+        print(f"     - correct: {correct_feedback}")
+        print(f"     - accuracy: {accuracy:.1f}%")
+        
+        # Queue distribution (top queues)
+        queue_distribution = db.query(
+            Prediction.predicted_queue,
+            func.count(Prediction.id).label('count')
+        ).group_by(
+            Prediction.predicted_queue
+        ).order_by(
+            func.count(Prediction.id).desc()
+        ).limit(7).all()
+        
+        queue_dist_dict = {queue: count for queue, count in queue_distribution}
+        print(f"   Queue distribution: {queue_dist_dict}")
+        
+        # Recent predictions
+        recent_predictions = db.query(Prediction).order_by(
+            Prediction.prediction_timestamp.desc()
+        ).limit(10).all()
+        
+        # Time-based metrics (last 24 hours)
+        from datetime import datetime, timedelta
+        twenty_four_hours_ago = datetime.utcnow() - timedelta(hours=24)
+        
+        predictions_24h = db.query(Prediction).filter(
+            Prediction.prediction_timestamp >= twenty_four_hours_ago
+        ).count()
+        
+        print(f"   Predictions (24h): {predictions_24h}")
+        
+        stats = {
+            "total_tickets": db.query(Ticket).count(),  # Keep original field
+            "total_predictions": total_predictions,
+            "auto_routed": auto_route,  # Keep original field names for frontend compatibility
+            "human_verify": human_verify,
+            "manual_triage": manual_triage,
+            "auto_route_percentage": round(auto_route_pct, 1),
+            "avg_confidence": round(avg_confidence, 3),
+            "total_feedback": total_feedback,
+            "corrections_needed": total_feedback - correct_feedback,  # Keep original field name
+            "accuracy": round(accuracy, 1),
+            "queue_distribution": queue_dist_dict,
+            "predictions_last_24h": predictions_24h,
+            "recent_predictions": [
+                {
+                    "id": p.id,
+                    "ticket_id": p.ticket_id,
+                    "predicted_queue": p.predicted_queue,
+                    "confidence_score": p.confidence_score,
+                    "routing_decision": p.routing_decision,
+                    "created_at": p.prediction_timestamp.isoformat() if p.prediction_timestamp else None
+                }
+                for p in recent_predictions
+            ]
+        }
+        
+        print("✅ Dashboard stats generated successfully")
+        return stats
+        
+    except Exception as e:
+        print(f"❌ Error generating dashboard stats: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Failed to generate dashboard stats: {str(e)}")
 
 @app.get("/api/dashboard/queue-performance", response_model=List[QueuePerformance])
 async def get_queue_performance(db: Session = Depends(get_db)):
@@ -641,6 +765,156 @@ async def predict_batch_demo(file: UploadFile, db: Session):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Batch prediction failed: {str(e)}")
 
+async def predict_batch_demo_json(request: dict, db: Session):
+    """Demo batch prediction function for JSON data when ML model is not available"""
+    import random
+    
+    try:
+        # Extract tickets from request
+        tickets_data = request.get('tickets', [])
+        
+        if not tickets_data:
+            raise HTTPException(status_code=400, detail="No tickets provided")
+        
+        print(f"🔄 Demo processing {len(tickets_data)} tickets...")
+        
+        results = []
+        saved_count = 0
+        duplicate_count = 0
+        
+        for i, ticket_data in enumerate(tickets_data):
+            try:
+                ticket_id = ticket_data.get('ticket_id', f"demo_batch_{i}")
+                
+                # Check for duplicates
+                existing_ticket = db.query(Ticket).filter(Ticket.ticket_id == ticket_id).first()
+                if existing_ticket:
+                    duplicate_count += 1
+                    print(f"⚠️  Skipping duplicate: {ticket_id}")
+                    continue
+                
+                # Demo prediction logic
+                title = ticket_data.get('title', '').lower()
+                content = ticket_data.get('content', '').lower()
+                
+                # Simple keyword-based classification
+                if any(word in title + content for word in ['malware', 'virus', 'ransomware', 'attack']):
+                    predicted_queue = 'DFIR::incidents'
+                    confidence_score = random.uniform(0.75, 0.95)
+                elif any(word in title + content for word in ['phishing', 'email', 'suspicious']):
+                    predicted_queue = 'DFIR::phishing'
+                    confidence_score = random.uniform(0.70, 0.90)
+                elif any(word in title + content for word in ['vulnerability', 'cve', 'patch']):
+                    predicted_queue = 'OFFSEC::CVD'
+                    confidence_score = random.uniform(0.65, 0.85)
+                elif any(word in title + content for word in ['pentest', 'penetration', 'security test']):
+                    predicted_queue = 'OFFSEC::Pentesting'
+                    confidence_score = random.uniform(0.70, 0.90)
+                elif any(word in title + content for word in ['intel', 'threat', 'ioc', 'indicator']):
+                    predicted_queue = 'CTI'
+                    confidence_score = random.uniform(0.75, 0.90)
+                elif any(word in title + content for word in ['sms', 'text', 'mobile']):
+                    predicted_queue = 'SMS'
+                    confidence_score = random.uniform(0.60, 0.80)
+                else:
+                    predicted_queue = 'Trash'
+                    confidence_score = random.uniform(0.30, 0.60)
+                
+                # Create probability dictionary
+                all_probabilities = {}
+                for class_name in class_names:
+                    if class_name == predicted_queue:
+                        all_probabilities[class_name] = confidence_score
+                    else:
+                        all_probabilities[class_name] = (1 - confidence_score) / (len(class_names) - 1)
+                
+                # Determine routing decision
+                if confidence_score >= 0.85:
+                    routing_decision = "auto_route"
+                elif confidence_score >= 0.65:
+                    routing_decision = "human_verify"
+                else:
+                    routing_decision = "manual_triage"
+                
+                # Parse created_date
+                created_date = None
+                if ticket_data.get('created_date'):
+                    try:
+                        created_date = datetime.fromisoformat(
+                            ticket_data['created_date'].replace('Z', '+00:00')
+                        )
+                    except:
+                        created_date = None
+                
+                # Create ticket
+                db_ticket = Ticket(
+                    ticket_id=ticket_id,
+                    title=ticket_data.get('title', ''),
+                    content=ticket_data.get('content', ''),
+                    created_date=created_date,
+                    email_address=ticket_data.get('email_address', 'unknown@example.com'),
+                    raw_data=ticket_data
+                )
+                
+                db.add(db_ticket)
+                db.flush()  # Get the database ID
+                
+                # Create prediction
+                db_prediction = Prediction(
+                    ticket_id=db_ticket.id,
+                    predicted_queue=predicted_queue,
+                    confidence_score=confidence_score,
+                    all_probabilities=all_probabilities,
+                    model_version="demo_keyword_v1",
+                    processing_time_ms=random.randint(10, 50),
+                    routing_decision=routing_decision,
+                    features_used={
+                        'demo_mode': True,
+                        'batch_processing': True,
+                        'batch_index': i
+                    }
+                )
+                
+                db.add(db_prediction)
+                saved_count += 1
+                
+                # Add to results
+                results.append({
+                    "ticket_id": ticket_id,
+                    "predicted_queue": predicted_queue,
+                    "confidence_score": confidence_score,
+                    "all_probabilities": all_probabilities,
+                    "routing_decision": routing_decision,
+                    "processing_time_ms": random.randint(10, 50),
+                    "prediction_id": f"demo_batch_{i}"
+                })
+                
+            except Exception as e:
+                print(f"❌ Error processing demo ticket {i}: {e}")
+                continue
+        
+        # Commit all changes
+        db.commit()
+        
+        print(f"✅ Demo batch processing completed:")
+        print(f"   - Processed: {len(tickets_data)} tickets")
+        print(f"   - Saved: {saved_count} new tickets")
+        print(f"   - Skipped duplicates: {duplicate_count}")
+        
+        return {
+            "total_processed": len(tickets_data),
+            "saved": saved_count,
+            "duplicates_skipped": duplicate_count,
+            "results": results
+        }
+        
+    except Exception as e:
+        db.rollback()
+        print(f"❌ Demo batch prediction error: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Demo batch prediction failed: {str(e)}")
+
 # Ticket prediction endpoint
 @app.post("/api/predict")
 async def predict_ticket(
@@ -731,13 +1005,184 @@ async def predict_ticket(
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
 
-# Batch prediction endpoint
+# Batch prediction endpoint (JSONL data directly)
 @app.post("/api/predict/batch")
-async def predict_batch(
+async def predict_batch_json(
+    request: dict,
+    db: Session = Depends(get_db)
+):
+    """Predict queue for multiple tickets from JSONL data with proper batch processing"""
+    
+    # Check if model is available, otherwise use demo mode
+    if not model or not processor:
+        # Demo mode - process batch with demo predictions
+        return await predict_batch_demo_json(request, db)
+    
+    try:
+        # Extract tickets from request
+        tickets_data = request.get('tickets', [])
+        
+        if not tickets_data:
+            raise HTTPException(status_code=400, detail="No tickets provided")
+        
+        print(f"🔄 Processing {len(tickets_data)} tickets in batch...")
+        
+        # Create DataFrame for batch processing
+        import pandas as pd
+        df = pd.DataFrame(tickets_data)
+        
+        # Ensure required columns exist
+        if 'created_date' not in df.columns:
+            df['created_date'] = datetime.now().isoformat()
+        
+        print(f"📊 Created DataFrame with {len(df)} tickets")
+        
+        # Extract features for entire batch at once
+        print("🔍 Extracting features for entire batch...")
+        features = processor.extract_features(df)
+        
+        # Prepare features for batch prediction
+        text_features, numerical_features, _ = processor.prepare_features(features, is_training=False)
+        
+        print(f"✅ Features prepared: {len(text_features)} text, {len(numerical_features)} numerical")
+        
+        # Run batch prediction (this is the key improvement!)
+        print("🚀 Running batch ML prediction...")
+        # Use larger batch size for better performance
+        predictions = model.predict(text_features, numerical_features, batch_size=64)
+        probabilities = model.predict_proba(text_features, numerical_features, batch_size=64)
+        
+        print(f"✅ Batch prediction completed: {len(predictions)} results")
+        
+        # Get existing ticket IDs in one query for efficiency
+        ticket_ids_to_check = [t.get('ticket_id', f"batch_{uuid.uuid4()}") for t in tickets_data]
+        existing_tickets = db.query(Ticket.ticket_id).filter(
+            Ticket.ticket_id.in_(ticket_ids_to_check)
+        ).all()
+        existing_ticket_ids = {t[0] for t in existing_tickets}  # Extract from tuples
+        
+        print(f"ℹ️  Found {len(existing_ticket_ids)} existing tickets")
+        
+        # Process results and save to database
+        results = []
+        saved_count = 0
+        duplicate_count = 0
+        
+        for i, (ticket_data, prediction, proba) in enumerate(zip(tickets_data, predictions, probabilities)):
+            try:
+                ticket_id = ticket_data.get('ticket_id', f"batch_{uuid.uuid4()}")
+                
+                # Skip duplicates
+                if ticket_id in existing_ticket_ids:
+                    duplicate_count += 1
+                    print(f"⚠️  Skipping duplicate: {ticket_id}")
+                    continue
+                
+                # Get prediction details
+                predicted_queue = class_names[prediction]
+                confidence_score = float(proba[prediction])
+                
+                # Create probability dictionary
+                all_probabilities = {
+                    class_names[j]: float(proba[j]) 
+                    for j in range(len(class_names))
+                }
+                
+                # Determine routing decision
+                if confidence_score >= 0.85:
+                    routing_decision = "auto_route"
+                elif confidence_score >= 0.65:
+                    routing_decision = "human_verify"
+                else:
+                    routing_decision = "manual_triage"
+                
+                # Parse created_date
+                created_date = None
+                if ticket_data.get('created_date'):
+                    try:
+                        created_date = datetime.fromisoformat(
+                            ticket_data['created_date'].replace('Z', '+00:00')
+                        )
+                    except:
+                        created_date = None
+                
+                # Create ticket
+                db_ticket = Ticket(
+                    ticket_id=ticket_id,
+                    title=ticket_data.get('title', ''),
+                    content=ticket_data.get('content', ''),
+                    created_date=created_date,
+                    email_address=ticket_data.get('email_address', 'unknown@example.com'),
+                    raw_data=ticket_data
+                )
+                
+                db.add(db_ticket)
+                db.flush()  # Get the database ID
+                
+                # Now create prediction with the ticket's database ID
+                db_prediction = Prediction(
+                    ticket_id=db_ticket.id,  # Now this has a value!
+                    predicted_queue=predicted_queue,
+                    confidence_score=confidence_score,
+                    all_probabilities=all_probabilities,
+                    model_version="hybrid_roberta_v1",
+                    processing_time_ms=0,
+                    routing_decision=routing_decision,
+                    features_used={
+                        'batch_processing': True,
+                        'batch_index': i
+                    }
+                )
+                
+                db.add(db_prediction)
+                saved_count += 1
+                
+                # Add to results
+                results.append({
+                    "ticket_id": ticket_id,
+                    "predicted_queue": predicted_queue,
+                    "confidence_score": confidence_score,
+                    "all_probabilities": all_probabilities,
+                    "routing_decision": routing_decision,
+                    "processing_time_ms": 0,
+                    "prediction_id": f"batch_{i}"
+                })
+                
+            except Exception as e:
+                print(f"❌ Error processing ticket {i}: {e}")
+                import traceback
+                traceback.print_exc()
+                continue
+        
+        # Commit all changes at once
+        db.commit()
+        
+        print(f"✅ Batch processing completed:")
+        print(f"   - Processed: {len(tickets_data)} tickets")
+        print(f"   - Saved: {saved_count} new tickets")
+        print(f"   - Skipped duplicates: {duplicate_count}")
+        
+        return {
+            "total_processed": len(tickets_data),
+            "saved": saved_count,
+            "duplicates_skipped": duplicate_count,
+            "results": results
+        }
+        
+    except Exception as e:
+        db.rollback()
+        print(f"❌ Batch prediction error: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Batch prediction failed: {str(e)}")
+
+# Batch prediction endpoint (file upload)
+@app.post("/api/predict/batch/file")
+async def predict_batch_file(
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
-    """Predict queue for multiple tickets from JSONL file"""
+    """Predict queue for multiple tickets from JSONL file with proper batch processing"""
     
     # Check if model is available, otherwise use demo mode
     if not model or not processor:
@@ -750,28 +1195,156 @@ async def predict_batch(
         lines = content.decode('utf-8').strip().split('\n')
         tickets_data = [json.loads(line) for line in lines if line.strip()]
         
+        print(f"🔄 Processing {len(tickets_data)} tickets in batch...")
+        
+        # Create DataFrame for batch processing
+        import pandas as pd
+        df = pd.DataFrame(tickets_data)
+        
+        # Ensure required columns exist
+        if 'created_date' not in df.columns:
+            df['created_date'] = datetime.now().isoformat()
+        
+        print(f"📊 Created DataFrame with {len(df)} tickets")
+        
+        # Extract features for entire batch at once
+        print("🔍 Extracting features for entire batch...")
+        features = processor.extract_features(df)
+        
+        # Prepare features for batch prediction
+        text_features, numerical_features, _ = processor.prepare_features(features, is_training=False)
+        
+        print(f"✅ Features prepared: {len(text_features)} text, {len(numerical_features)} numerical")
+        
+        # Run batch prediction (this is the key improvement!)
+        print("🚀 Running batch ML prediction...")
+        # Use larger batch size for better performance
+        predictions = model.predict(text_features, numerical_features, batch_size=64)
+        probabilities = model.predict_proba(text_features, numerical_features, batch_size=64)
+        
+        print(f"✅ Batch prediction completed: {len(predictions)} results")
+        
+        
+        # Get existing ticket IDs in one query for efficiency
+        ticket_ids_to_check = [t.get('ticket_id', f"batch_{uuid.uuid4()}") for t in tickets_data]
+        existing_tickets = db.query(Ticket.ticket_id).filter(
+            Ticket.ticket_id.in_(ticket_ids_to_check)
+        ).all()
+        existing_ticket_ids = {t[0] for t in existing_tickets}  # Extract from tuples
+        
+        print(f"ℹ️  Found {len(existing_ticket_ids)} existing tickets")
+        
+        # Process results and save to database
         results = []
-        for ticket_data in tickets_data:
-            # Create ticket
-            ticket_create = TicketCreate(
-                ticket_id=ticket_data.get('ticket_id', f"batch_{uuid.uuid4()}"),
-                title=ticket_data.get('title', ''),
-                content=ticket_data.get('content', ''),
-                created_date=datetime.fromisoformat(ticket_data.get('created_date', datetime.now().isoformat())) if ticket_data.get('created_date') else None,
-                email_address=ticket_data.get('email_address'),
-                raw_data=ticket_data
-            )
-            
-            # Make prediction (reuse the single prediction logic)
-            prediction_result = await predict_ticket(ticket_create, db)
-            results.append(prediction_result)
+        saved_count = 0
+        duplicate_count = 0
+        
+        for i, (ticket_data, prediction, proba) in enumerate(zip(tickets_data, predictions, probabilities)):
+            try:
+                ticket_id = ticket_data.get('ticket_id', f"batch_{uuid.uuid4()}")
+                
+                # Skip duplicates
+                if ticket_id in existing_ticket_ids:
+                    duplicate_count += 1
+                    print(f"⚠️  Skipping duplicate: {ticket_id}")
+                    continue
+                
+                # Get prediction details
+                predicted_queue = class_names[prediction]
+                confidence_score = float(proba[prediction])
+                
+                # Create probability dictionary
+                all_probabilities = {
+                    class_names[j]: float(proba[j]) 
+                    for j in range(len(class_names))
+                }
+                
+                # Determine routing decision
+                if confidence_score >= 0.85:
+                    routing_decision = "auto_route"
+                elif confidence_score >= 0.65:
+                    routing_decision = "human_verify"
+                else:
+                    routing_decision = "manual_triage"
+                
+                # Parse created_date
+                created_date = None
+                if ticket_data.get('created_date'):
+                    try:
+                        created_date = datetime.fromisoformat(
+                            ticket_data['created_date'].replace('Z', '+00:00')
+                        )
+                    except:
+                        created_date = None
+                
+                # Create ticket
+                db_ticket = Ticket(
+                    ticket_id=ticket_id,
+                    title=ticket_data.get('title', ''),
+                    content=ticket_data.get('content', ''),
+                    created_date=created_date,
+                    email_address=ticket_data.get('email_address', 'unknown@example.com'),
+                    raw_data=ticket_data
+                )
+                
+                db.add(db_ticket)
+                db.flush()  # Get the database ID
+                
+                # Now create prediction with the ticket's database ID
+                db_prediction = Prediction(
+                    ticket_id=db_ticket.id,  # Now this has a value!
+                    predicted_queue=predicted_queue,
+                    confidence_score=confidence_score,
+                    all_probabilities=all_probabilities,
+                    model_version="hybrid_roberta_v1",
+                    processing_time_ms=0,
+                    routing_decision=routing_decision,
+                    features_used={
+                        'batch_processing': True,
+                        'batch_index': i
+                    }
+                )
+                
+                db.add(db_prediction)
+                saved_count += 1
+                
+                # Add to results
+                results.append({
+                    "ticket_id": ticket_id,
+                    "predicted_queue": predicted_queue,
+                    "confidence_score": confidence_score,
+                    "all_probabilities": all_probabilities,
+                    "routing_decision": routing_decision,
+                    "processing_time_ms": 0,
+                    "prediction_id": f"batch_{i}"
+                })
+                
+            except Exception as e:
+                print(f"❌ Error processing ticket {i}: {e}")
+                import traceback
+                traceback.print_exc()
+                continue
+        
+        # Commit all changes at once
+        db.commit()
+        
+        print(f"✅ Batch processing completed:")
+        print(f"   - Processed: {len(tickets_data)} tickets")
+        print(f"   - Saved: {saved_count} new tickets")
+        print(f"   - Skipped duplicates: {duplicate_count}")
         
         return {
-            "total_processed": len(results),
+            "total_processed": len(tickets_data),
+            "saved": saved_count,
+            "duplicates_skipped": duplicate_count,
             "results": results
         }
         
     except Exception as e:
+        db.rollback()
+        print(f"❌ Batch prediction error: {e}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Batch prediction failed: {str(e)}")
 
 # Low confidence tickets endpoint
@@ -818,9 +1391,15 @@ async def submit_feedback(
     """Submit human feedback for a prediction"""
     
     try:
+        # Create feedback record - ensure all UUIDs are converted to strings
+        prediction_id_str = str(uuid.UUID(feedback_data.prediction_id))
+        reviewer_id_str = str(uuid.UUID(feedback_data.reviewer_id))
+        
+        print(f"🔍 DEBUG: Converting UUIDs - prediction_id: {prediction_id_str}, reviewer_id: {reviewer_id_str}")
+        
         db_feedback = Feedback(
-            prediction_id=uuid.UUID(feedback_data.prediction_id),
-            reviewer_id=uuid.UUID(feedback_data.reviewer_id),
+            prediction_id=prediction_id_str,
+            reviewer_id=reviewer_id_str,
             corrected_queue=feedback_data.corrected_queue,
             feedback_notes=feedback_data.feedback_notes,
             keywords_highlighted=feedback_data.keywords_highlighted,
@@ -828,6 +1407,23 @@ async def submit_feedback(
             is_correct=feedback_data.is_correct
         )
         db.add(db_feedback)
+        
+        # Update the original prediction based on feedback
+        prediction = db.query(Prediction).filter(
+            Prediction.id == prediction_id_str
+        ).first()
+        
+        if prediction:
+            if feedback_data.is_correct == False:
+                # If prediction was incorrect, mark for human verification
+                prediction.routing_decision = "human_verify"
+                if feedback_data.corrected_queue:
+                    prediction.predicted_queue = feedback_data.corrected_queue
+            elif feedback_data.is_correct == True:
+                # If prediction was correct, keep as auto_route if it wasn't already
+                if prediction.routing_decision == "manual_triage":
+                    prediction.routing_decision = "auto_route"
+        
         db.commit()
         db.refresh(db_feedback)
         

@@ -1,0 +1,2 @@
+{"ticket_id": "FRONTEND-TEST-001", "title": "Critical malware incident", "content": "We detected ransomware on our production servers. Need immediate incident response and forensic analysis.", "email_address": "security@test.com"}
+{"ticket_id": "FRONTEND-TEST-002", "title": "Phishing email report", "content": "Received suspicious email with malicious attachment. Please investigate.", "email_address": "user@test.com"}

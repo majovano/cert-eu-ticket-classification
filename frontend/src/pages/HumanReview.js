@@ -104,7 +104,7 @@ const HumanReview = () => {
     try {
       await axios.post('/api/feedback', {
         prediction_id: selectedTicket.prediction_id,
-        reviewer_id: 'user-123', // In real app, get from auth
+        reviewer_id: '550e8400-e29b-41d4-a716-446655440000', // Demo reviewer ID
         corrected_queue: feedback.corrected_queue,
         feedback_notes: feedback.feedback_notes,
         keywords_highlighted: feedback.keywords_highlighted,
